@@ -1,0 +1,168 @@
+{
+  "name": "Donation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Name of the food item"
+    },
+    "description": {
+      "type": "string",
+      "description": "Details about the food"
+    },
+    "quantity": {
+      "type": "string",
+      "description": "Amount of food (e.g. 10 servings, 5 kg)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "cooked_meals",
+        "raw_ingredients",
+        "packaged_food",
+        "baked_goods",
+        "beverages",
+        "other"
+      ],
+      "description": "Type of food"
+    },
+    "freshness_hours": {
+      "type": "number",
+      "description": "Hours until food expires"
+    },
+    "pickup_address": {
+      "type": "string",
+      "description": "Address for pickup"
+    },
+    "pickup_lat": {
+      "type": "number",
+      "description": "Latitude of pickup location"
+    },
+    "pickup_lng": {
+      "type": "number",
+      "description": "Longitude of pickup location"
+    },
+    "donor_name": {
+      "type": "string",
+      "description": "Name of the donor"
+    },
+    "donor_email": {
+      "type": "string",
+      "description": "Email of the donor"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "claimed",
+        "picked_up",
+        "delivered",
+        "expired"
+      ],
+      "default": "available",
+      "description": "Current status of donation"
+    },
+    "claimed_by": {
+      "type": "string",
+      "description": "Email of receiver who claimed"
+    },
+    "claimed_by_name": {
+      "type": "string",
+      "description": "Name of receiver who claimed"
+    },
+    "volunteer_email": {
+      "type": "string",
+      "description": "Email of volunteer delivering"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Name of volunteer delivering"
+    },
+    "qr_code": {
+      "type": "string",
+      "description": "Unique QR verification code for delivery"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When delivery was verified via QR"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Photo of the food"
+    }
+  },
+  "required": [
+    "title",
+    "quantity",
+    "pickup_address"
+  ],
+  "rls": {
+    "create": {
+      "data.donor_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.donor_email": "{{user.email}}"
+        },
+        {
+          "data.claimed_by": "{{user.email}}"
+        },
+        {
+          "data.volunteer_email": "{{user.email}}"
+        },
+        {
+          "data.status": "available"
+        },
+        {
+          "$and": [
+            {
+              "data.status": "claimed"
+            },
+            {
+              "data.volunteer_email": {
+                "$exists": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.donor_email": "{{user.email}}"
+        },
+        {
+          "data.claimed_by": "{{user.email}}"
+        },
+        {
+          "data.volunteer_email": "{{user.email}}"
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.donor_email": "{{user.email}}"
+        }
+      ]
+    }
+  }
+}
