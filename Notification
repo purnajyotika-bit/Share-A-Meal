@@ -1,0 +1,30 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user this notification is for"
+    },
+    "title": {
+      "type": "string",
+      "description": "Notification title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification body"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "donation_claimed",
+        "donation_picked_up",
+        "donation_delivered",
+        "new_donation_nearby",
+        "qr_verified",
+        "general"
+      ],
+      "default": "general"
+    },
+    "read": {
+ 
