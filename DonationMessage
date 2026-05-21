@@ -1,0 +1,30 @@
+{
+  "name": "DonationMessage",
+  "type": "object",
+  "properties": {
+    "donation_id": {
+      "type": "string",
+      "description": "ID of the donation this message belongs to"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of the sender"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "donor",
+        "receiver",
+        "volunteer"
+      ],
+      "description": "Role of the sender in this donation"
+    },
+    "text": {
+      "type": "string",
+      "description": "Message content"
+    }
+ 
