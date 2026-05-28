@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from './base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/lib/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
+import { Button } from './button';
 import { Plus, Package, MapPin, Utensils, Users, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import DonationCard from '@/components/donations/DonationCard';
-import DonationFormDialog from '@/components/donations/DonationFormDialog';
+import DonationCard from './DonationCard';
+import DonationFormDialog from './DonationFormDialog';
 
 const ROLES = [
-  { key: 'donor',     label: 'Donor',     icon: Utensils, desc: 'I have food to give',         color: 'bg-primary text-white' },
-  { key: 'receiver',  label: 'NGO / Receiver', icon: Users,    desc: 'I need food for my community', color: 'bg-blue-600 text-white' },
-  { key: 'volunteer', label: 'Volunteer',  icon: Truck,    desc: 'I can pick up & deliver',     color: 'bg-emerald-600 text-white' },
+  { key: 'donor',     keyLabel: 'donor',                    icon: Utensils, keyDesc: 'i_have_food_to_give',         color: 'bg-primary text-white' },
+  { key: 'receiver',  keyLabel: 'receiver',                 icon: Users,    keyDesc: 'i_need_food_for_community', color: 'bg-blue-600 text-white' },
+  { key: 'volunteer', keyLabel: 'volunteer',               icon: Truck,    keyDesc: 'i_can_pick_up_deliver',     color: 'bg-emerald-600 text-white' },
 ];
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
 
@@ -98,9 +100,9 @@ export default function Dashboard() {
   const Icon = activeRole?.icon || Package;
 
   const roleHeadings = {
-    donor:     { title: 'My Donations',    sub: 'Post surplus food for others to claim' },
-    receiver:  { title: 'Available Food',  sub: 'Browse and claim food donations near you' },
-    volunteer: { title: 'Deliveries',      sub: 'Pick up claimed food and deliver it' },
+    donor:     { titleKey: 'my_donations',    subKey: 'i_am_a_donor' },
+    receiver:  { titleKey: 'available_food',  subKey: 'i_am_a_receiver' },
+    volunteer: { titleKey: 'deliveries',      subKey: 'i_am_a_volunteer' },
   };
 
   return (
@@ -108,7 +110,7 @@ export default function Dashboard() {
 
       {/* Role switcher banner */}
       <div className="mb-8 bg-card border rounded-2xl p-6">
-        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-3">I am a…</p>
+        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-3">{t('i_am_a')}</p>
         <div className="flex flex-wrap gap-3">
           {ROLES.map(r => {
             const RIcon = r.icon;
@@ -124,8 +126,8 @@ export default function Dashboard() {
               >
                 <RIcon className="w-4 h-4 shrink-0" />
                 <div className="text-left">
-                  <span className="block font-semibold">{r.label}</span>
-                  <span className={`block text-[11px] ${isActive ? 'opacity-80' : 'text-muted-foreground'}`}>{r.desc}</span>
+                  <span className="block font-semibold">{t(r.keyLabel)}</span>
+                  <span className={`block text-[11px] ${isActive ? 'opacity-80' : 'text-muted-foreground'}`}>{t(r.keyDesc)}</span>
                 </div>
               </button>
             );
@@ -140,18 +142,18 @@ export default function Dashboard() {
             <Icon className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{roleHeadings[role]?.title}</h1>
-            <p className="text-muted-foreground text-sm">{roleHeadings[role]?.sub}</p>
+            <h1 className="text-xl font-bold text-foreground">{t(roleHeadings[role]?.titleKey || 'dashboard')}</h1>
+            <p className="text-muted-foreground text-sm">{t(roleHeadings[role]?.subKey || 'dashboard')}</p>
           </div>
         </div>
         <div className="flex gap-2">
           {role === 'donor' && (
             <Button onClick={() => setShowForm(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
-              <Plus className="w-4 h-4" /> Post Food
+              <Plus className="w-4 h-4" /> {t('donate_food')}
             </Button>
           )}
           <Link to="/nearby">
-            <Button variant="outline" className="gap-2"><MapPin className="w-4 h-4" /> Map View</Button>
+            <Button variant="outline" className="gap-2"><MapPin className="w-4 h-4" /> {t('map_view')}</Button>
           </Link>
         </div>
       </div>
@@ -159,17 +161,17 @@ export default function Dashboard() {
       {/* Donor tip */}
       {role === 'donor' && (
         <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 mb-6 text-sm text-primary">
-          <strong>You're a Donor.</strong> Post your surplus food — restaurants, hotels, households welcome. Someone nearby will claim and collect it.
+          <strong>{t('dashboard_role_banner_donor_title')}</strong> {t('dashboard_role_banner_donor_body')}
         </div>
       )}
       {role === 'receiver' && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 mb-6 text-sm text-blue-700">
-          <strong>You're an NGO / Receiver.</strong> Browse available food donations and claim what fits your community's need. A volunteer will coordinate the pickup.
+          <strong>{t('dashboard_role_banner_receiver_title')}</strong> {t('dashboard_role_banner_receiver_body')}
         </div>
       )}
       {role === 'volunteer' && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 mb-6 text-sm text-emerald-700">
-          <strong>You're a Volunteer.</strong> Accept delivery tasks for claimed donations, pick them up from the donor and deliver to the receiver. Use QR codes to confirm handoff.
+          <strong>{t('dashboard_role_banner_volunteer_title')}</strong> {t('dashboard_role_banner_volunteer_body')}
         </div>
       )}
 
@@ -182,14 +184,14 @@ export default function Dashboard() {
         <div className="text-center py-20 bg-card border rounded-2xl">
           <Icon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="font-semibold text-foreground mb-1">
-            {role === 'donor' ? 'No donations posted yet' : role === 'receiver' ? 'No available donations right now' : 'No active deliveries'}
+            {role === 'donor' ? t('dashboard_no_donations_donor') : role === 'receiver' ? t('dashboard_no_donations_receiver') : t('dashboard_no_donations_volunteer')}
           </h3>
           <p className="text-muted-foreground text-sm">
-            {role === 'donor' ? 'Click "Post Food" to share your surplus' : role === 'receiver' ? 'Check back soon — donors post new food regularly' : 'Claimed donations waiting for a volunteer will appear here'}
+            {role === 'donor' ? t('dashboard_empty_donor') : role === 'receiver' ? t('dashboard_empty_receiver') : t('dashboard_empty_volunteer')}
           </p>
           {role === 'donor' && (
             <Button onClick={() => setShowForm(true)} className="mt-4 bg-primary hover:bg-primary/90 text-white gap-2">
-              <Plus className="w-4 h-4" /> Post Food Now
+              <Plus className="w-4 h-4" /> {t('dashboard_post_food_now')}
             </Button>
           )}
         </div>

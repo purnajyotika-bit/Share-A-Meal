@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { base44 } from '@/api/base44Client';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Input } from './input';
+import { Textarea } from './textarea';
+import { Button } from './button';
+import { Label } from './label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
+import { base44 } from './base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, ImagePlus, X } from 'lucide-react';
+import { useLanguage } from './LanguageContext';
 
 const categories = [
-  { value: 'cooked_meals', label: 'Cooked Meals' },
-  { value: 'raw_ingredients', label: 'Raw Ingredients' },
-  { value: 'packaged_food', label: 'Packaged Food' },
-  { value: 'baked_goods', label: 'Baked Goods' },
-  { value: 'beverages', label: 'Beverages' },
-  { value: 'other', label: 'Other' },
+  { value: 'cooked_meals', key: 'category_cooked_meals' },
+  { value: 'raw_ingredients', key: 'category_raw_ingredients' },
+  { value: 'packaged_food', key: 'category_packaged_food' },
+  { value: 'baked_goods', key: 'category_baked_goods' },
+  { value: 'beverages', key: 'category_beverages' },
+  { value: 'other', key: 'category_other' },
 ];
 
 export default function DonationFormDialog({ open, onOpenChange, userEmail, userName }) {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     title: '', description: '', quantity: '', category: 'cooked_meals',
@@ -78,52 +80,52 @@ export default function DonationFormDialog({ open, onOpenChange, userEmail, user
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>Post Food Donation</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t('donation_title')}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label>Food name *</Label>
-            <Input value={form.title} onChange={e => u('title', e.target.value)} placeholder="e.g. 20 lunch boxes" required />
+            <Label>{t('donation_title')} *</Label>
+            <Input value={form.title} onChange={e => u('title', e.target.value)} placeholder={t('donation_title_placeholder')} required />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Quantity *</Label>
-              <Input value={form.quantity} onChange={e => u('quantity', e.target.value)} placeholder="e.g. 10 servings" required />
+              <Label>{t('quantity')} *</Label>
+              <Input value={form.quantity} onChange={e => u('quantity', e.target.value)} placeholder={t('quantity_placeholder')} required />
             </div>
             <div>
-              <Label>Category</Label>
+              <Label>{t('category')}</Label>
               <Select value={form.category} onValueChange={v => u('category', v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{categories.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
+                <SelectContent>{categories.map(c => <SelectItem key={c.value} value={c.value}>{t(c.key)}</SelectItem>)}</SelectContent>
               </Select>
             </div>
           </div>
           <div>
-            <Label>Freshness window (hours)</Label>
-            <Input type="number" value={form.freshness_hours} onChange={e => u('freshness_hours', e.target.value)} placeholder="e.g. 4" />
+            <Label>{t('freshness_hours')}</Label>
+            <Input type="number" value={form.freshness_hours} onChange={e => u('freshness_hours', e.target.value)} placeholder={t('freshness_placeholder')} />
           </div>
           <div>
-            <Label>Pickup address *</Label>
-            <Input value={form.pickup_address} onChange={e => u('pickup_address', e.target.value)} placeholder="Full street address" required />
+            <Label>{t('pickup_address')} *</Label>
+            <Input value={form.pickup_address} onChange={e => u('pickup_address', e.target.value)} placeholder={t('pickup_address_placeholder')} required />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Latitude</Label>
-              <Input type="number" step="any" value={form.pickup_lat} onChange={e => u('pickup_lat', e.target.value)} placeholder="e.g. 15.9129" />
+              <Label>{t('latitude')}</Label>
+              <Input type="number" step="any" value={form.pickup_lat} onChange={e => u('pickup_lat', e.target.value)} placeholder={t('latitude_placeholder')} />
             </div>
             <div>
-              <Label>Longitude</Label>
-              <Input type="number" step="any" value={form.pickup_lng} onChange={e => u('pickup_lng', e.target.value)} placeholder="e.g. 79.7400" />
+              <Label>{t('longitude')}</Label>
+              <Input type="number" step="any" value={form.pickup_lng} onChange={e => u('pickup_lng', e.target.value)} placeholder={t('longitude_placeholder')} />
             </div>
           </div>
           <div>
-            <Label>Description</Label>
-            <Textarea value={form.description} onChange={e => u('description', e.target.value)} placeholder="Any notes..." rows={2} />
+            <Label>{t('donation_description')}</Label>
+            <Textarea value={form.description} onChange={e => u('description', e.target.value)} placeholder={t('description_placeholder')} rows={2} />
           </div>
           <div>
-            <Label>Food Photo</Label>
+            <Label>{t('campaign_image')}</Label>
             {imagePreview ? (
               <div className="relative mt-1 rounded-lg overflow-hidden border">
-                <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
+                <img src={imagePreview} alt={t('preview_image_alt')} className="w-full h-40 object-cover" />
                 <button
                   type="button"
                   onClick={removeImage}
@@ -135,13 +137,13 @@ export default function DonationFormDialog({ open, onOpenChange, userEmail, user
             ) : (
               <label className="mt-1 flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                 <ImagePlus className="w-7 h-7 text-muted-foreground mb-1" />
-                <span className="text-xs text-muted-foreground">Click to upload a photo</span>
+                <span className="text-xs text-muted-foreground">{t('click_to_upload')}</span>
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
             )}
           </div>
           <Button type="submit" disabled={mutation.isPending || uploadingImage} className="w-full bg-primary hover:bg-primary/90 text-white">
-            {(mutation.isPending || uploadingImage) ? <><Loader2 className="w-4 h-4 animate-spin" />{uploadingImage ? ' Uploading...' : ' Posting...'}</> : 'Post Donation'}
+            {(mutation.isPending || uploadingImage) ? <><Loader2 className="w-4 h-4 animate-spin" />{uploadingImage ? ` ${t('uploading')}` : ` ${t('submitting')}`}</> : t('donate_food')}
           </Button>
         </form>
       </DialogContent>

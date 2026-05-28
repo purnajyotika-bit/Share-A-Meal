@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { base44 } from './base44Client';
+import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
+import { Button } from './button';
+import { Input } from './input';
+import { ScrollArea } from './scroll-area';
 import { Send, MessageCircle, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -19,6 +20,12 @@ const roleLabels = {
   volunteer: 'Volunteer',
 };
 
+const ROLE_LABEL_KEYS = {
+  donor: 'role_donor',
+  receiver: 'role_receiver',
+  volunteer: 'role_volunteer',
+};
+
 function getSenderRole(donation, email) {
   if (email === donation.donor_email) return 'donor';
   if (email === donation.claimed_by) return 'receiver';
@@ -28,6 +35,7 @@ function getSenderRole(donation, email) {
 
 export default function ChatPanel({ donation }) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
@@ -86,8 +94,8 @@ export default function ChatPanel({ donation }) {
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/30">
         <MessageCircle className="w-4 h-4 text-primary" />
-        <span className="font-semibold text-sm text-foreground">Coordination Chat</span>
-        <span className="text-xs text-muted-foreground ml-1">— visible to donor, NGO & volunteer</span>
+        <span className="font-semibold text-sm text-foreground">{t('coordination_chat_title')}</span>
+        <span className="text-xs text-muted-foreground ml-1">{t('coordination_chat_visible')}</span>
       </div>
 
       {/* Messages */}
@@ -99,7 +107,7 @@ export default function ChatPanel({ donation }) {
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-center">
             <MessageCircle className="w-8 h-8 text-muted-foreground/40 mb-2" />
-            <p className="text-xs text-muted-foreground">No messages yet. Start coordinating!</p>
+            <p className="text-xs text-muted-foreground">{t('no_messages_yet')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -111,7 +119,7 @@ export default function ChatPanel({ donation }) {
                     <div className="flex items-center gap-1.5 mb-1">
                       <span className="text-xs font-semibold text-foreground">{msg.sender_name}</span>
                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${roleColors[msg.sender_role] || roleColors.donor}`}>
-                        {roleLabels[msg.sender_role] || msg.sender_role}
+                        {t(ROLE_LABEL_KEYS[msg.sender_role] || 'role_donor')}
                       </span>
                     </div>
                   )}
@@ -138,7 +146,7 @@ export default function ChatPanel({ donation }) {
           <Input
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Type a message…"
+            placeholder={t('type_message_placeholder')}
             className="flex-1 h-9"
             maxLength={500}
             autoComplete="off"
@@ -149,7 +157,7 @@ export default function ChatPanel({ donation }) {
         </form>
       ) : (
         <div className="px-4 py-3 border-t bg-muted/30 text-center text-xs text-muted-foreground">
-          Only the donor, NGO, and volunteer can send messages.
+          {t('chat_restricted_text')}
         </div>
       )}
     </div>

@@ -1,12 +1,14 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Button } from './button';
+import { Badge } from './badge';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from './base44Client';
 import { CheckCircle2, XCircle, Star, AlertTriangle } from 'lucide-react';
+import { useLanguage } from './LanguageContext';
 
 export default function AdminCampaignPanel({ open, onOpenChange }) {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
 
   const { data: campaigns = [] } = useQuery({
@@ -28,24 +30,23 @@ export default function AdminCampaignPanel({ open, onOpenChange }) {
 
   const statusBadge = (status) => {
     const styles = { pending: 'bg-yellow-100 text-yellow-700', approved: 'bg-green-100 text-green-700', rejected: 'bg-red-100 text-red-700' };
-    return <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${styles[status] || 'bg-muted text-muted-foreground'}`}>{status}</span>;
+    return <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${styles[status] || 'bg-muted text-muted-foreground'}`}>{t(`status_${status}`)}</span>;
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>Campaign Admin Panel</DialogTitle></DialogHeader>
-
+        <DialogHeader><DialogTitle>{t('campaign_admin_panel')}</DialogTitle></DialogHeader>
         {pending.length > 0 && (
           <div className="mb-6">
-            <h3 className="font-semibold text-sm text-foreground mb-3">⏳ Pending Approval ({pending.length})</h3>
+            <h3 className="font-semibold text-sm text-foreground mb-3">⏳ {t('pending_approval')} ({pending.length})</h3>
             <div className="space-y-3">
               {pending.map(c => (
                 <div key={c.id} className="border rounded-xl p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <p className="font-semibold text-sm text-foreground">{c.title}</p>
-                      <p className="text-xs text-muted-foreground">by {c.creator_name} · Goal: ₹{c.goal_amount?.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">{t('by')} {c.creator_name} · {t('goal')}: ₹{c.goal_amount?.toLocaleString()}</p>
                     </div>
                     {statusBadge(c.status)}
                   </div>
@@ -53,19 +54,19 @@ export default function AdminCampaignPanel({ open, onOpenChange }) {
                   <div className="flex gap-2 flex-wrap">
                     <Button size="sm" className="h-7 bg-green-600 hover:bg-green-700 text-white gap-1"
                       onClick={() => updateMutation.mutate({ id: c.id, data: { status: 'approved' } })}>
-                      <CheckCircle2 className="w-3 h-3" />Approve
+                      <CheckCircle2 className="w-3 h-3" />{t('approve')}
                     </Button>
                     <Button size="sm" variant="outline" className="h-7 text-red-600 border-red-200 hover:bg-red-50 gap-1"
                       onClick={() => updateMutation.mutate({ id: c.id, data: { status: 'rejected' } })}>
-                      <XCircle className="w-3 h-3" />Reject
+                      <XCircle className="w-3 h-3" />{t('reject')}
                     </Button>
                     <Button size="sm" variant="outline" className="h-7 gap-1"
                       onClick={() => updateMutation.mutate({ id: c.id, data: { is_featured: !c.is_featured } })}>
-                      <Star className="w-3 h-3" />{c.is_featured ? 'Unfeature' : 'Feature'}
+                      <Star className="w-3 h-3" />{c.is_featured ? t('unfeature') : t('feature')}
                     </Button>
                     <Button size="sm" variant="outline" className="h-7 gap-1"
                       onClick={() => updateMutation.mutate({ id: c.id, data: { is_emergency: !c.is_emergency } })}>
-                      <AlertTriangle className="w-3 h-3" />{c.is_emergency ? 'Remove Emergency' : 'Mark Emergency'}
+                      <AlertTriangle className="w-3 h-3" />{c.is_emergency ? t('remove_emergency') : t('mark_emergency')}
                     </Button>
                   </div>
                 </div>
@@ -75,7 +76,7 @@ export default function AdminCampaignPanel({ open, onOpenChange }) {
         )}
 
         <div>
-          <h3 className="font-semibold text-sm text-foreground mb-3">All Campaigns ({others.length})</h3>
+          <h3 className="font-semibold text-sm text-foreground mb-3">{t('all_campaigns')} ({others.length})</h3>
           <div className="space-y-2">
             {others.map(c => (
               <div key={c.id} className="border rounded-xl p-3 flex items-center justify-between gap-3">

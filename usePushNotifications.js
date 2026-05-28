@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from './base44Client';
 
 const typeEmoji = {
   donation_claimed: '📦',

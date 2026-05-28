@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Check, Package, Truck, MapPin, QrCode, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { base44 } from '@/api/base44Client';
+import { Button } from './button';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { ScrollArea } from './scroll-area';
+import { base44 } from './base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from './AuthContext';
 import { formatDistanceToNow } from 'date-fns';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { usePushNotifications } from './usePushNotifications';
+import { useLanguage } from './LanguageContext';
 
 const typeIcons = {
   donation_claimed: Package,
@@ -20,6 +21,7 @@ const typeIcons = {
 
 export default function NotificationBell() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
@@ -65,17 +67,17 @@ export default function NotificationBell() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0 shadow-xl">
         <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="font-semibold text-sm">Notifications</h3>
+          <h3 className="font-semibold text-sm">{t('notifications_title')}</h3>
           {unreadCount > 0 && (
             <Button variant="ghost" size="sm" className="text-xs h-7"
               onClick={() => notifications.filter(n => !n.read).forEach(n => markReadMutation.mutate(n.id))}>
-              Mark all read
+              {t('notifications_mark_all_read')}
             </Button>
           )}
         </div>
         <ScrollArea className="max-h-80">
           {notifications.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground text-sm">No notifications yet</div>
+            <div className="p-6 text-center text-muted-foreground text-sm">{t('notifications_empty')}</div>
           ) : (
             <div className="divide-y">
               {notifications.map((notif) => {

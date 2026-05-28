@@ -1,13 +1,15 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from './base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Trophy, Award } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from './avatar';
+import { Badge } from './badge';
+import { useLanguage } from './LanguageContext';
 
 const rankBg = ['bg-amber-100 text-amber-700', 'bg-slate-100 text-slate-600', 'bg-orange-100 text-orange-700'];
 
 export default function Leaderboard() {
+  const { t } = useLanguage();
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['leaderboard'],
     queryFn: async () => {
@@ -18,11 +20,11 @@ export default function Leaderboard() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2">Community</div>
+      <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2">{t('leaderboard_label')}</div>
       <h1 className="flex items-center gap-3 text-2xl sm:text-3xl font-display font-bold text-foreground mb-2">
-        <Trophy className="w-7 h-7 text-primary" /> Impact leaderboard
+        <Trophy className="w-7 h-7 text-primary" /> {t('leaderboard_title')}
       </h1>
-      <p className="text-muted-foreground text-sm mb-8">Top contributors this season — donors and volunteers turning surplus into supper.</p>
+      <p className="text-muted-foreground text-sm mb-8">{t('leaderboard_subtitle')}</p>
 
       <div className="bg-card border rounded-2xl overflow-hidden divide-y">
         {isLoading ? (
@@ -33,7 +35,7 @@ export default function Leaderboard() {
             </div>
           ))
         ) : users.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground">No users yet</div>
+          <div className="p-12 text-center text-muted-foreground">{t('leaderboard_empty')}</div>
         ) : (
           users.map((u, i) => {
             const initials = u.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';

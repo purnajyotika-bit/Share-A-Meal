@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from './base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, Clock, Package } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import DonationMapView from '@/components/map/DonationMapView';
+import { Badge } from './badge';
+import { Card } from './card';
+import DonationMapView from './DonationMapView';
+import { useLanguage } from './LanguageContext';
 
 export default function NearbyDonations() {
+  const { t } = useLanguage();
   const [selectedId, setSelectedId] = useState(null);
 
   const { data: donations = [], isLoading } = useQuery({
@@ -19,8 +21,8 @@ export default function NearbyDonations() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Nearby Donations</h1>
-        <p className="text-muted-foreground text-sm mt-1">Browse available food donations on the map</p>
+        <h1 className="text-2xl font-bold text-foreground">{t('nearby_donations_title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('nearby_donations_subtitle')}</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -38,7 +40,7 @@ export default function NearbyDonations() {
           {isLoading ? (
             Array(4).fill(0).map((_, i) => <div key={i} className="h-24 bg-muted animate-pulse rounded-xl" />)
           ) : donations.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground text-sm">No available donations right now</div>
+            <div className="text-center py-12 text-muted-foreground text-sm">{t('nearby_donations_empty')}</div>
           ) : (
             donations.map(d => (
               <Card
@@ -51,7 +53,7 @@ export default function NearbyDonations() {
                     <h3 className="font-semibold text-sm text-foreground">{d.title}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">{d.donor_name}</p>
                   </div>
-                  <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20 text-[10px]">Available</Badge>
+                  <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20 text-[10px]">{t('available_label')}</Badge>
                 </div>
                 <div className="flex gap-3 mt-2 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1"><Package className="w-3 h-3" />{d.quantity}</span>

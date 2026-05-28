@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { base44 } from '@/api/base44Client';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Button } from './button';
+import { Input } from './input';
+import { Label } from './label';
+import { Textarea } from './textarea';
+import { base44 } from './base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, CheckCircle2 } from 'lucide-react';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useLanguage } from './LanguageContext';
 
 const PRESETS = [100, 500, 1000, 5000];
 
@@ -52,18 +52,20 @@ export default function DonateModal({ open, onOpenChange, campaign, userEmail, u
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{done ? 'Thank you! 🙏' : `${t('donate')} — ${campaign?.title}`}</DialogTitle>
+          <DialogTitle>{done ? t('donation_modal_thank_you') : `${t('donate')} — ${campaign?.title}`}</DialogTitle>
         </DialogHeader>
         {done ? (
           <div className="flex flex-col items-center gap-4 py-6">
             <CheckCircle2 className="w-16 h-16 text-green-500" />
-            <p className="text-center text-muted-foreground">Your donation of <strong>₹{amount}</strong> has been recorded. You're making a real difference!</p>
-            <Button onClick={handleClose} className="bg-primary hover:bg-primary/90 text-white w-full">Close</Button>
+            <p className="text-center text-muted-foreground">
+              {t('donation_modal_success')} <strong>₹{amount}</strong>.
+            </p>
+            <Button onClick={handleClose} className="bg-primary hover:bg-primary/90 text-white w-full">{t('donation_modal_close')}</Button>
           </div>
         ) : (
           <div className="space-y-4">
             <div>
-              <Label>Amount (₹)</Label>
+              <Label>{t('donation_modal_amount_label')}</Label>
               <div className="flex gap-2 mt-1 flex-wrap">
                 {PRESETS.map(p => (
                   <button key={p} onClick={() => setAmount(String(p))}
@@ -72,22 +74,22 @@ export default function DonateModal({ open, onOpenChange, campaign, userEmail, u
                   </button>
                 ))}
               </div>
-              <Input className="mt-2" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Or enter custom amount" min={1} />
+              <Input className="mt-2" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={t('donation_modal_custom_amount_placeholder')} min={1} />
             </div>
             <div>
-              <Label>Message (optional)</Label>
-              <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Leave an encouraging message..." rows={2} />
+              <Label>{t('donation_modal_message_label')}</Label>
+              <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder={t('donation_modal_message_placeholder')} rows={2} />
             </div>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" checked={anonymous} onChange={e => setAnonymous(e.target.checked)} className="rounded" />
-              Donate anonymously
+              {t('donation_modal_anonymous')}
             </label>
             <Button
               className="w-full bg-primary hover:bg-primary/90 text-white"
               disabled={!amount || Number(amount) < 1 || mutation.isPending}
               onClick={() => mutation.mutate()}
             >
-              {mutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : `Donate ₹${amount || '0'}`}
+              {mutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('donation_modal_processing')}</> : `${t('donate')} ₹${amount || '0'}`}
             </Button>
           </div>
         )}

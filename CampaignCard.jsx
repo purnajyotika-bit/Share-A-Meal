@@ -1,10 +1,10 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from './badge';
+import { Button } from './button';
+import { Progress } from './progress';
 import { Calendar, Users, Share2, AlertTriangle, Star } from 'lucide-react';
 import { differenceInDays, parseISO } from 'date-fns';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useLanguage } from './LanguageContext';
 
 const categoryColors = {
   food_rescue: 'bg-orange-100 text-orange-700',

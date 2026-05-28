@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Utensils, Users, Truck, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
+import { Button } from './button';
+import { base44 } from './base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { useLanguage } from './LanguageContext';
 import { motion } from 'framer-motion';
 
 const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
 
 export default function Home() {
+  const { t } = useLanguage();
   const { data: donations = [] } = useQuery({
     queryKey: ['donations-stats'],
     queryFn: () => base44.entities.Donation.list(),
@@ -36,26 +38,25 @@ export default function Home() {
             <motion.div initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.6 }}>
               <div className="flex items-center gap-2 text-primary text-xs font-bold tracking-[0.2em] uppercase mb-6">
                 <Sparkles className="w-4 h-4" />
-                One person's extra. Another's relief.
+                {t('hero_tagline')}
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] mb-6">
-                Tonight, someone eats{' '}
-                <span className="text-primary italic">because this exists.</span>
+                {t('hero_title')}
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-lg">
-                FoodBridge connects restaurants, hotels and households with NGOs and volunteers nearby — so surplus food doesn't end in a bin, it ends on a plate.
+                {t('hero_sub')}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link to="/dashboard?role=donor">
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-6">
-                    Donate food <ArrowRight className="w-4 h-4" />
+                    {t('donate_food')} <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to="/dashboard?role=receiver">
-                  <Button size="lg" variant="outline" className="px-6">I run an NGO</Button>
+                  <Button size="lg" variant="outline" className="px-6">{t('i_run_ngo')}</Button>
                 </Link>
                 <Link to="/dashboard?role=volunteer">
-                  <Button size="lg" variant="ghost" className="px-6">Volunteer</Button>
+                  <Button size="lg" variant="ghost" className="px-6">{t('volunteer')}</Button>
                 </Link>
               </div>
 
@@ -77,12 +78,12 @@ export default function Home() {
               <div className="rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=700&h=500&fit=crop"
-                  alt="Volunteers distributing food"
+                  alt={t('home_hero_image_alt')}
                   className="w-full h-[480px] object-cover"
                 />
                 <div className="absolute bottom-6 left-6 right-6 bg-foreground/80 backdrop-blur-md text-background rounded-xl px-5 py-3">
-                  <div className="text-[10px] font-bold tracking-[0.15em] uppercase opacity-70">Live</div>
-                  <div className="font-semibold">Surplus → Supper, in under an hour.</div>
+                  <div className="text-[10px] font-bold tracking-[0.15em] uppercase opacity-70">{t('live_label')}</div>
+                  <div className="font-semibold">{t('surplus_to_supper')}</div>
                 </div>
               </div>
             </motion.div>
@@ -93,13 +94,13 @@ export default function Home() {
       {/* How it works */}
       <section className="bg-muted/50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3">How FoodBridge works</div>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-12">Three roles. One simple, human chain.</h2>
+          <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3">{t('how_it_works')}</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-12">{t('how_it_works_title')}</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: Utensils, title: '1. Donors post food', desc: 'Restaurants, hotels and households list surplus food with quantity, freshness window and pickup spot.' },
-              { icon: Users, title: '2. Receivers claim it', desc: 'Verified NGOs, shelters and orphanages browse nearby donations and claim what fits their need.' },
-              { icon: Truck, title: '3. Volunteers deliver', desc: 'Volunteers accept the pickup, mark it picked up, and complete delivery — humans helping humans.' },
+              { icon: Utensils, title: t('home_step_donors_title'), desc: t('home_step_donors_desc') },
+              { icon: Users, title: t('home_step_receivers_title'), desc: t('home_step_receivers_desc') },
+              { icon: Truck, title: t('home_step_volunteers_title'), desc: t('home_step_volunteers_desc') },
             ].map((step) => (
               <div key={step.title} className="bg-card border rounded-2xl p-8 hover:shadow-lg transition-shadow">
                 <step.icon className="w-8 h-8 text-primary mb-5" />
@@ -117,23 +118,23 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <img
               src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop"
-              alt="Community meal"
+              alt={t('home_cta_image_alt')}
               className="rounded-2xl shadow-lg w-full h-[360px] object-cover"
             />
             <div>
-              <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3">Why this matters</div>
-              <h2 className="font-display text-3xl font-bold text-foreground mb-4">Food waste is a logistics problem dressed as a moral one.</h2>
+              <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3">{t('why_this_matters')}</div>
+              <h2 className="font-display text-3xl font-bold text-foreground mb-4">{t('why_this_matters_title')}</h2>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                A third of all food made for humans ends up wasted. Meanwhile, one in nine people goes to bed hungry. FoodBridge isn't a magic fix — it's a small, well-built bridge between two ends that have always been close.
+                {t('why_this_matters_desc')}
               </p>
               <div className="flex gap-3">
                 <Link to="/dashboard">
                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
-                    Join FoodBridge <ArrowRight className="w-4 h-4" />
+                    {t('join')} <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to="/leaderboard">
-                  <Button variant="outline">See impact leaderboard</Button>
+                  <Button variant="outline">{t('see_impact')}</Button>
                 </Link>
               </div>
             </div>

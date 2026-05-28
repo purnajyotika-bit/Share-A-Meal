@@ -1,6 +1,11 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
 import base44 from "@base44/vite-plugin"
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,5 +21,14 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-  ]
+  ],
+  resolve: {
+    alias: [
+      { find: /^@\/components\/ui\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
+      { find: /^@\/components\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
+      { find: /^@\/pages\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
+      { find: /^@\/lib\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
+      { find: /^@\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
+    ],
+  },
 });

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useLanguage } from './LanguageContext';
 import { Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from './button';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 export default function LanguageSwitcher() {
-  const { lang, setLang, LANGUAGES } = useLanguage();
+  const { lang, setLang, LANGUAGES, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const current = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
@@ -18,7 +18,7 @@ export default function LanguageSwitcher() {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-52 p-2">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2 mb-2">Select Language</p>
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2 mb-2">{t('select_language')}</p>
         <div className="space-y-0.5">
           {LANGUAGES.map(l => (
             <button

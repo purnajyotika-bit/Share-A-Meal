@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { base44 } from '@/api/base44Client';
+import { Button } from './button';
+import { Input } from './input';
+import { base44 } from './base44Client';
+import { useLanguage } from './LanguageContext';
 import { Bot, Send, Loader2, Sparkles } from 'lucide-react';
 
 const QUICK_QUESTIONS = [
-  'What food categories have the most waste?',
-  'When is the best time to pick up donations?',
-  'Which areas need more volunteers?',
-  'How can we improve delivery rates?',
+  'quick_question_1',
+  'quick_question_2',
+  'quick_question_3',
+  'quick_question_4',
 ];
 
 export default function AIChatInsight({ donations, users, campaigns }) {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,20 +52,20 @@ App Stats:
           <Bot className="w-4 h-4 text-primary" />
         </div>
         <div>
-          <p className="font-semibold text-sm text-foreground">AI Analytics Assistant</p>
-          <p className="text-xs text-muted-foreground">Ask anything about food waste patterns & optimization</p>
+          <p className="font-semibold text-sm text-foreground">{t('ai_chat_assistant_title')}</p>
+          <p className="text-xs text-muted-foreground">{t('ai_chat_assistant_subtitle')}</p>
         </div>
         <Sparkles className="w-4 h-4 text-primary ml-auto" />
       </div>
 
       {messages.length === 0 && (
         <div className="p-4">
-          <p className="text-xs text-muted-foreground mb-3 font-medium">Quick questions:</p>
+          <p className="text-xs text-muted-foreground mb-3 font-medium">{t('quick_questions_label')}</p>
           <div className="flex flex-wrap gap-2">
             {QUICK_QUESTIONS.map(q => (
-              <button key={q} onClick={() => ask(q)}
+              <button key={q} onClick={() => ask(t(q))}
                 className="text-xs bg-muted hover:bg-muted/70 text-foreground px-3 py-1.5 rounded-full border transition-colors">
-                {q}
+                {t(q)}
               </button>
             ))}
           </div>
@@ -98,7 +100,7 @@ App Stats:
       )}
 
       <div className="p-4 border-t flex gap-2">
-        <Input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask about food waste patterns..."
+        <Input value={input} onChange={e => setInput(e.target.value)} placeholder={t('ai_chat_placeholder')}
           onKeyDown={e => e.key === 'Enter' && ask()} className="text-sm" />
         <Button onClick={() => ask()} disabled={!input.trim() || loading} size="icon" className="bg-primary hover:bg-primary/90 text-white shrink-0">
           <Send className="w-4 h-4" />

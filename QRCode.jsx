@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useLanguage } from './LanguageContext';
 
 // Draws a visual QR-code-like grid from the code string
 function drawQR(canvas, code) {
@@ -40,6 +41,7 @@ function drawQR(canvas, code) {
 }
 
 export default function QRCodeDisplay({ code }) {
+  const { t } = useLanguage();
   const ref = useRef(null);
   useEffect(() => { if (ref.current && code) drawQR(ref.current, code); }, [code]);
 
@@ -50,7 +52,7 @@ export default function QRCodeDisplay({ code }) {
       </div>
       <div className="text-center">
         <p className="font-mono text-3xl font-bold tracking-[0.4em] text-foreground">{code}</p>
-        <p className="text-xs text-muted-foreground mt-1">Show this code to the receiver</p>
+        <p className="text-xs text-muted-foreground mt-1">{t('qr_code_instruction')}</p>
       </div>
     </div>
   );

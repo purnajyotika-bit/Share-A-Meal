@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
-import { useLanguage } from '@/lib/LanguageContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { base44 } from './base44Client';
+import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
+import { Button } from './button';
+import { Badge } from './badge';
 import { AlertTriangle, Plus, Filter, TrendingUp, Star, LayoutGrid } from 'lucide-react';
-import CampaignCard from '@/components/fundraising/CampaignCard';
-import DonateModal from '@/components/fundraising/DonateModal';
-import CreateCampaignModal from '@/components/fundraising/CreateCampaignModal';
-import DonorLeaderboard from '@/components/fundraising/DonorLeaderboard';
-import AdminCampaignPanel from '@/components/fundraising/AdminCampaignPanel';
+import CampaignCard from './CampaignCard';
+import DonateModal from './DonateModal';
+import CreateCampaignModal from './CreateCampaignModal';
+import DonorLeaderboard from './DonorLeaderboard';
+import AdminCampaignPanel from './AdminCampaignPanel';
 
 const FILTERS = ['all', 'emergency', 'featured', 'food_rescue', 'ngo_operations', 'transport', 'emergency_relief', 'community_kitchen'];
 
@@ -56,11 +56,11 @@ export default function Fundraising() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">{t('fundraising')}</h1>
-          <p className="text-muted-foreground text-sm mt-1">Support food rescue operations, NGOs and community kitchens</p>
+          <p className="text-muted-foreground text-sm mt-1">{t('fundraising_subtitle')}</p>
         </div>
         <div className="flex gap-2">
           {user?.role === 'admin' && (
-            <Button variant="outline" onClick={() => setShowAdmin(true)}>Admin Panel</Button>
+            <Button variant="outline" onClick={() => setShowAdmin(true)}>{t('admin_panel')}</Button>
           )}
           <Button onClick={() => setShowCreate(true)} className="bg-primary hover:bg-primary/90 text-white gap-2">
             <Plus className="w-4 h-4" />{t('create_campaign')}
@@ -73,7 +73,7 @@ export default function Fundraising() {
         <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6">
           <div className="flex items-center gap-2 text-red-700 mb-3">
             <AlertTriangle className="w-5 h-5" />
-            <span className="font-bold text-sm">🚨 Emergency Fundraising Alerts</span>
+            <span className="font-bold text-sm">🚨 {t('emergency_fundraising_alerts')}</span>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-1">
             {emergencyCampaigns.map(c => (
@@ -85,7 +85,7 @@ export default function Fundraising() {
                     ₹{(c.raised_amount || 0).toLocaleString()} / ₹{c.goal_amount.toLocaleString()}
                   </span>
                   <Button size="sm" className="h-7 text-xs bg-red-600 hover:bg-red-700 text-white" onClick={() => setSelectedCampaign(c)}>
-                    Donate Now
+                    {t('donate_now')}
                   </Button>
                 </div>
               </div>
@@ -136,10 +136,10 @@ export default function Fundraising() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-16 bg-card border rounded-2xl">
               <p className="text-4xl mb-3">🫙</p>
-              <p className="font-semibold text-foreground">No campaigns found</p>
-              <p className="text-muted-foreground text-sm">Be the first to create a campaign!</p>
+              <p className="font-semibold text-foreground">{t('no_campaigns_found')}</p>
+              <p className="text-muted-foreground text-sm">{t('create_campaign_prompt')}</p>
               <Button onClick={() => setShowCreate(true)} className="mt-4 bg-primary hover:bg-primary/90 text-white gap-2">
-                <Plus className="w-4 h-4" /> Create Campaign
+                <Plus className="w-4 h-4" /> {t('create_campaign')}
               </Button>
             </div>
           ) : (
@@ -156,12 +156,12 @@ export default function Fundraising() {
 
           {/* Impact summary */}
           <div className="bg-gradient-to-br from-primary/10 to-accent/10 border rounded-2xl p-5">
-            <h3 className="font-semibold text-foreground mb-3">📊 Fundraising Impact</h3>
+            <h3 className="font-semibold text-foreground mb-3">📊 {t('fundraising_impact')}</h3>
             <div className="space-y-3">
               {[
-                { label: 'Total Raised', value: `₹${approved.reduce((s, c) => s + (c.raised_amount || 0), 0).toLocaleString()}` },
-                { label: 'Campaigns Active', value: approved.length },
-                { label: 'Total Donors', value: approved.reduce((s, c) => s + (c.donor_count || 0), 0) },
+                { label: t('total_raised'), value: `₹${approved.reduce((s, c) => s + (c.raised_amount || 0), 0).toLocaleString()}` },
+                { label: t('campaigns_active'), value: approved.length },
+                { label: t('total_donors'), value: approved.reduce((s, c) => s + (c.donor_count || 0), 0) },
               ].map(item => (
                 <div key={item.label} className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">{item.label}</span>
@@ -173,13 +173,13 @@ export default function Fundraising() {
 
           {/* Fund usage transparency */}
           <div className="bg-card border rounded-2xl p-5">
-            <h3 className="font-semibold text-foreground mb-3">🔍 Fund Usage</h3>
+            <h3 className="font-semibold text-foreground mb-3">🔍 {t('fund_usage')}</h3>
             <div className="space-y-2">
               {[
-                { label: 'Food Rescue Ops', pct: 40, color: 'bg-primary' },
-                { label: 'Transportation', pct: 25, color: 'bg-blue-500' },
-                { label: 'NGO Support', pct: 20, color: 'bg-green-500' },
-                { label: 'Community Kitchens', pct: 15, color: 'bg-purple-500' },
+                { label: t('food_rescue_ops'), pct: 40, color: 'bg-primary' },
+                { label: t('transportation'), pct: 25, color: 'bg-blue-500' },
+                { label: t('ngo_support'), pct: 20, color: 'bg-green-500' },
+                { label: t('community_kitchens'), pct: 15, color: 'bg-purple-500' },
               ].map(item => (
                 <div key={item.label}>
                   <div className="flex justify-between text-xs text-muted-foreground mb-1">

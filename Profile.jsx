@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { base44 } from './base44Client';
+import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
+import { Button } from './button';
+import { Input } from './input';
+import { Textarea } from './textarea';
+import { Label } from './label';
+import { Card, CardContent, CardHeader, CardTitle } from './card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
+import { Avatar, AvatarFallback } from './avatar';
 import { Save, LogOut, Loader2, KeyRound, User, Phone, MapPin, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Profile() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [saving, setSaving] = useState(false);
   const [resetSending, setResetSending] = useState(false);
   const [form, setForm] = useState({ phone: '', city: '', org_type: '', bio: '' });
@@ -34,29 +36,29 @@ export default function Profile() {
     setSaving(true);
     await base44.auth.updateMe(form);
     setSaving(false);
-    toast.success('Profile updated!');
+    toast.success(t('profile_updated'));
   };
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
-    if (pwForm.newPass !== pwForm.confirm) { toast.error('Passwords do not match'); return; }
-    if (pwForm.newPass.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    if (pwForm.newPass !== pwForm.confirm) { toast.error(t('profile_passwords_no_match')); return; }
+    if (pwForm.newPass.length < 6) { toast.error(t('profile_password_min_length')); return; }
     setResetSending(true);
     await base44.integrations.Core.SendEmail({
       to: user.email,
-      subject: 'FoodBridge — Password Reset',
-      body: `Hi ${user.full_name},\n\nYou requested a password reset on FoodBridge.\n\nIf this was you, please use the "Forgot Password" link on the login page to set a new password.\n\nBest,\nFoodBridge Team`,
+      subject: t('profile_reset_email_subject'),
+      body: t('profile_reset_email_body').replace('{user}', user.full_name),
     });
     setResetSending(false);
     setPwForm({ newPass: '', confirm: '' });
-    toast.success('Password reset email sent to ' + user.email);
+    toast.success(`${t('profile_reset_email_sent')} ${user.email}`);
   };
 
   const initials = user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Profile</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">{t('profile_title')}</h1>
 
       <Card className="mb-6">
         <CardContent className="pt-6">
@@ -74,32 +76,42 @@ export default function Profile() {
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <Label className="flex items-center gap-1.5 mb-1.5"><Phone className="w-3.5 h-3.5" />Phone</Label>
-                <Input value={form.phone} onChange={e => setForm(p => ({...p, phone: e.target.value}))} placeholder="Phone number" />
+                <Label className="flex items-center gap-1.5 mb-1.5"><Phone className="w-3.5 h-3.5" />{t('profile_phone_label')}</Label>
+                <Input value={form.phone} onChange={e => setForm(p => ({...p, phone: e.target.value}))} placeholder={t('profile_phone_placeholder')} />
               </div>
               <div>
-                <Label className="flex items-center gap-1.5 mb-1.5"><MapPin className="w-3.5 h-3.5" />City</Label>
-                <Input value={form.city} onChange={e => setForm(p => ({...p, city: e.target.value}))} placeholder="Your city" />
+                <Label className="flex items-center gap-1.5 mb-1.5"><MapPin className="w-3.5 h-3.5" />{t('profile_city_label')}</Label>
+                <Input value={form.city} onChange={e => setForm(p => ({...p, city: e.target.value}))} placeholder={t('profile_city_placeholder')} />
               </div>
             </div>
             <div>
-              <Label className="flex items-center gap-1.5 mb-1.5"><Building2 className="w-3.5 h-3.5" />Organisation type</Label>
+              <Label className="flex items-center gap-1.5 mb-1.5"><Building2 className="w-3.5 h-3.5" />{t('profile_org_type_label')}</Label>
               <Select value={form.org_type} onValueChange={v => setForm(p => ({...p, org_type: v}))}>
-                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('profile_org_type_placeholder')} /></SelectTrigger>
                 <SelectContent>
-                  {['Restaurant','Hotel','Event Organizer','Household','NGO','Shelter','Orphanage','Individual','Other'].map(t => (
-                    <SelectItem key={t} value={t.toLowerCase().replace(' ', '_')}>{t}</SelectItem>
+                  {[
+                    { value: 'restaurant', label: t('org_restaurant') },
+                    { value: 'hotel', label: t('org_hotel') },
+                    { value: 'event_organizer', label: t('org_event_organizer') },
+                    { value: 'household', label: t('org_household') },
+                    { value: 'ngo', label: t('org_ngo') },
+                    { value: 'shelter', label: t('org_shelter') },
+                    { value: 'orphanage', label: t('org_orphanage') },
+                    { value: 'individual', label: t('org_individual') },
+                    { value: 'other', label: t('org_other') },
+                  ].map(item => (
+                    <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="flex items-center gap-1.5 mb-1.5"><User className="w-3.5 h-3.5" />Bio</Label>
-              <Textarea value={form.bio} onChange={e => setForm(p => ({...p, bio: e.target.value}))} placeholder="Tell us about yourself..." rows={3} />
+              <Label className="flex items-center gap-1.5 mb-1.5"><User className="w-3.5 h-3.5" />{t('profile_bio_label')}</Label>
+              <Textarea value={form.bio} onChange={e => setForm(p => ({...p, bio: e.target.value}))} placeholder={t('profile_bio_placeholder')} rows={3} />
             </div>
             <Button type="submit" disabled={saving} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Save Changes
+              {t('profile_save_changes')}
             </Button>
           </form>
         </CardContent>
@@ -107,28 +119,28 @@ export default function Profile() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2"><KeyRound className="w-4 h-4" />Password Reset</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2"><KeyRound className="w-4 h-4" />{t('profile_password_reset_title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handlePasswordReset} className="space-y-4">
             <div>
-              <Label>New password</Label>
-              <Input type="password" value={pwForm.newPass} onChange={e => setPwForm(p => ({...p, newPass: e.target.value}))} placeholder="Min 6 characters" />
+              <Label>{t('profile_new_password_label')}</Label>
+              <Input type="password" value={pwForm.newPass} onChange={e => setPwForm(p => ({...p, newPass: e.target.value}))} placeholder={t('profile_new_password_placeholder')} />
             </div>
             <div>
-              <Label>Confirm new password</Label>
-              <Input type="password" value={pwForm.confirm} onChange={e => setPwForm(p => ({...p, confirm: e.target.value}))} placeholder="Repeat password" />
+              <Label>{t('profile_confirm_new_password_label')}</Label>
+              <Input type="password" value={pwForm.confirm} onChange={e => setPwForm(p => ({...p, confirm: e.target.value}))} placeholder={t('profile_confirm_new_password_placeholder')} />
             </div>
             <Button type="submit" variant="outline" disabled={resetSending} className="gap-2">
               {resetSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
-              Send Reset Email
+              {t('profile_send_reset_email')}
             </Button>
           </form>
         </CardContent>
       </Card>
 
       <Button variant="ghost" onClick={() => base44.auth.logout('/')} className="text-destructive hover:text-destructive gap-2">
-        <LogOut className="w-4 h-4" /> Sign out
+        <LogOut className="w-4 h-4" /> {t('profile_sign_out')}
       </Button>
     </div>
   );

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Heart, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from './button';
+import { Sheet, SheetContent, SheetTrigger } from './sheet';
 import NotificationBell from './NotificationBell';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useAuth } from '@/lib/AuthContext';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
 
 export default function Navbar() {
   const location = useLocation();
@@ -24,8 +24,8 @@ export default function Navbar() {
               <Heart className="w-5 h-5 text-white fill-current" />
             </div>
             <div className="leading-tight">
-              <span className="font-bold text-foreground text-[15px] tracking-tight">Share A Meal</span>
-              <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">FoodBridge</span>
+              <span className="font-bold text-foreground text-[15px] tracking-tight">{t('nav_brand_title')}</span>
+              <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">{t('nav_brand_subtitle')}</span>
             </div>
           </Link>
 
@@ -49,7 +49,7 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <Link to="/"><Button size="sm" className="bg-primary hover:bg-primary/90 text-white">Get started</Button></Link>
+              <Link to="/signin"><Button size="sm" className="bg-primary hover:bg-primary/90 text-white">{t('nav_get_started')}</Button></Link>
             )}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>

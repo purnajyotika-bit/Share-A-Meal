@@ -1,21 +1,22 @@
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "./toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClientInstance } from '@/lib/query-client'
+import { queryClientInstance } from './query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import { LanguageProvider } from '@/lib/LanguageContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import AppLayout from '@/components/layout/AppLayout';
-import Home from '@/pages/Home';
-import Dashboard from '@/pages/Dashboard';
-import NearbyDonations from '@/pages/NearbyDonations';
-import Profile from '@/pages/Profile';
-import DeliveryHandoff from '@/pages/DeliveryHandoff';
-import Leaderboard from '@/pages/Leaderboard';
-import DonationDetail from '@/pages/DonationDetail';
-import Fundraising from '@/pages/Fundraising';
-import Analytics from '@/pages/Analytics';
+import PageNotFound from './PageNotFound';
+import { AuthProvider, useAuth } from './AuthContext';
+import { LanguageProvider } from './LanguageContext';
+import UserNotRegisteredError from './UserNotRegisteredError';
+import AppLayout from './AppLayout';
+import Home from './Home';
+import SignIn from './SignIn';
+import Dashboard from './Dashboard';
+import NearbyDonations from './NearbyDonations';
+import Profile from './Profile';
+import DeliveryHandoff from './DeliveryHandoff';
+import Leaderboard from './Leaderboard';
+import DonationDetail from './DonationDetail';
+import Fundraising from './Fundraising';
+import Analytics from './Analytics';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
         <Route path="/donation/:id" element={<DonationDetail />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/fundraising" element={<Fundraising />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

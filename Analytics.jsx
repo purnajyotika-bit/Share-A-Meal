@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { useLanguage } from '@/lib/LanguageContext';
-import { useAuth } from '@/lib/AuthContext';
+import { base44 } from './base44Client';
+import { useLanguage } from './LanguageContext';
+import { useAuth } from './AuthContext';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { Button } from '@/components/ui/button';
+import { Button } from './button';
 import { Loader2, TrendingUp, Users, Utensils, Leaf, DollarSign, Package, Bot } from 'lucide-react';
-import KPICard from '@/components/analytics/KPICard';
-import AIChatInsight from '@/components/analytics/AIChatInsight';
+import KPICard from './KPICard';
+import AIChatInsight from './AIChatInsights';
 
 const COLORS = ['#e8622a', '#3b82f6', '#22c55e', '#a855f7', '#f59e0b', '#ec4899'];
 
@@ -100,19 +100,19 @@ export default function Analytics() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">{t('analytics')}</h1>
-          <p className="text-muted-foreground text-sm mt-1">Real-time insights on food rescue operations</p>
+          <p className="text-muted-foreground text-sm mt-1">{t('analytics_subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <div className="flex bg-muted rounded-lg p-1">
             {['daily', 'weekly', 'monthly'].map(p => (
               <button key={p} onClick={() => setPeriod(p)}
                 className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors capitalize ${period === p ? 'bg-white shadow text-foreground' : 'text-muted-foreground'}`}>
-                {p}
+                {t(`period_${p}`)}
               </button>
             ))}
           </div>
           <Button variant="outline" className="gap-2" onClick={() => setShowAI(!showAI)}>
-            <Bot className="w-4 h-4" />AI Insights
+            <Bot className="w-4 h-4" />{t('analytics_ai_insights')}
           </Button>
         </div>
       </div>
@@ -123,6 +123,24 @@ export default function Analytics() {
           <AIChatInsight donations={donations} users={users} campaigns={campaigns} />
         </div>
       )}
+
+      {/* Provided images (uploaded by user) */}
+      <div className="mb-6">
+        <h3 className="font-semibold text-foreground mb-3">{t('analytics_provided_images_title') || 'Provided Analytics Images'}</h3>
+        <div className="flex gap-4 flex-wrap">
+          {[1,2,3].map(i => (
+            <div key={i} className="w-full sm:w-1/3 bg-card border rounded-lg p-2 flex items-center justify-center">
+              <img
+                src={`/assets/analytics-${i}.png`}
+                alt={t('analytics_provided_image_alt').replace('{n}', i) || `Analytics image ${i}`}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                className="max-h-48 object-contain"
+              />
+              <div className="text-xs text-muted-foreground text-center">{t('analytics_provided_image_hint') || 'Drop image at /assets/analytics-<n>.png'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
@@ -137,7 +155,7 @@ export default function Analytics() {
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
         {/* Donation trend */}
         <div className="bg-card border rounded-2xl p-5">
-          <h3 className="font-semibold text-foreground mb-4">📈 Daily Donation Trend (Last 7 Days)</h3>
+          <h3 className="font-semibold text-foreground mb-4">{t('analytics_chart_trend')}</h3>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -151,7 +169,7 @@ export default function Analytics() {
 
         {/* Category distribution */}
         <div className="bg-card border rounded-2xl p-5">
-          <h3 className="font-semibold text-foreground mb-4">🍱 Food Category Distribution</h3>
+          <h3 className="font-semibold text-foreground mb-4">{t('analytics_chart_category')}</h3>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie data={categoryData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
@@ -164,7 +182,7 @@ export default function Analytics() {
 
         {/* Status breakdown */}
         <div className="bg-card border rounded-2xl p-5">
-          <h3 className="font-semibold text-foreground mb-4">📦 Donation Status Breakdown</h3>
+          <h3 className="font-semibold text-foreground mb-4">{t('analytics_chart_status')}</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={statusData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -178,9 +196,9 @@ export default function Analytics() {
 
         {/* Volunteer performance */}
         <div className="bg-card border rounded-2xl p-5">
-          <h3 className="font-semibold text-foreground mb-4">🤝 Volunteer Delivery Performance</h3>
+          <h3 className="font-semibold text-foreground mb-4">{t('analytics_chart_volunteer')}</h3>
           {volunteerData.length === 0 ? (
-            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">No volunteer data yet</div>
+            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">{t('analytics_no_volunteer_data')}</div>
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={volunteerData}>
