@@ -9,6 +9,7 @@ import UserNotRegisteredError from './UserNotRegisteredError';
 import AppLayout from './AppLayout';
 import Home from './Home';
 import SignIn from './SignIn';
+import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import NearbyDonations from './NearbyDonations';
 import Profile from './Profile';
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/fundraising" element={<Fundraising />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

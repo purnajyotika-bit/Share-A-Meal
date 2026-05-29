@@ -132,6 +132,80 @@ export const AuthProvider = ({ children }) => {
     base44.auth.redirectToLogin(window.location.href);
   };
 
+  const login = async (email, password) => {
+    try {
+      setIsLoadingAuth(true);
+      setAuthError(null);
+      
+      // Query for user with matching email and password
+      const users = await base44.entities.User.list({
+        filters: {
+          email: { $eq: email },
+          password_hash: { $eq: btoa(password) } // Simple hash for demo - use proper hashing in production
+        }
+      });
+
+      if (users && users.length > 0) {
+        const user = users[0];
+        setUser(user);
+        setIsAuthenticated(true);
+        setIsLoadingAuth(false);
+        setAuthChecked(true);
+        return { success: true, user };
+      } else {
+        setIsLoadingAuth(false);
+        throw new Error('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsLoadingAuth(false);
+      setAuthError({
+        type: 'login_failed',
+        message: error.message || 'Login failed'
+      });
+      throw error;
+    }
+  };
+
+  const register = async (email, password, fullName, role) => {
+    try {
+      setIsLoadingAuth(true);
+      setAuthError(null);
+      
+      // Check if user already exists
+      const existingUsers = await base44.entities.User.list({
+        filters: { email: { $eq: email } }
+      });
+
+      if (existingUsers && existingUsers.length > 0) {
+        throw new Error('User with this email already exists');
+      }
+
+      // Create new user
+      const newUser = await base44.entities.User.create({
+        email,
+        password_hash: btoa(password), // Simple hash for demo
+        full_name: fullName,
+        role: role || 'donor',
+        created_at: new Date().toISOString()
+      });
+
+      setUser(newUser);
+      setIsAuthenticated(true);
+      setIsLoadingAuth(false);
+      setAuthChecked(true);
+      return { success: true, user: newUser };
+    } catch (error) {
+      console.error('Registration error:', error);
+      setIsLoadingAuth(false);
+      setAuthError({
+        type: 'registration_failed',
+        message: error.message || 'Registration failed'
+      });
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -144,7 +218,9 @@ export const AuthProvider = ({ children }) => {
       logout,
       navigateToLogin,
       checkUserAuth,
-      checkAppState
+      checkAppState,
+      login,
+      register
     }}>
       {children}
     </AuthContext.Provider>
