@@ -99,7 +99,7 @@ export default function Analytics() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('analytics')}</h1>
+          <h1 className="text-2xl font-bold text-foreground" data-testid="analytics-header">{t('analytics')}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t('analytics_subtitle')}</p>
         </div>
         <div className="flex gap-2">
@@ -111,7 +111,12 @@ export default function Analytics() {
               </button>
             ))}
           </div>
-          <Button variant="outline" className="gap-2" onClick={() => setShowAI(!showAI)}>
+          <Button
+            variant="outline"
+            className="gap-2"
+            data-testid="analytics-ai-insights-toggle"
+            onClick={() => setShowAI(!showAI)}
+          >
             <Bot className="w-4 h-4" />{t('analytics_ai_insights')}
           </Button>
         </div>

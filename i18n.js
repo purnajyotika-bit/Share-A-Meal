@@ -325,7 +325,7 @@ export const translations = {
     login_error: 'An error occurred during login. Please try again.',
     logging_in: 'Signing in...',
     or: 'or',
-    login_with_base44: 'Login with Base44',
+    login_with_google: 'Continue with Google',
     no_account: "Don't have an account?",
     sign_up: 'Sign up',
     full_name: 'Full Name',
@@ -337,6 +337,8 @@ export const translations = {
     join_description: 'Join FoodBridge today',
     creating_account: 'Creating account...',
     already_have_account: 'Already have an account?',
+    google_signin_success: 'Google sign-in verified. Logging you in...',
+    google_signin_failed: 'Google sign-in failed. Please try again.',
   },
   hi: {
   category_baked_goods: 'True',

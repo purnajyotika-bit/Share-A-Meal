@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './button';
 import { Input } from './input';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import { Mail, Lock, Loader2 } from 'lucide-react';
-import { base44 } from './base44Client';
 
 export default function SignIn() {
   const { t } = useLanguage();
@@ -16,6 +15,91 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  useEffect(() => {
+    // Load Google Sign-In script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setGoogleLoaded(true);
+      initializeGoogleSignIn();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
+        callback: handleGoogleSignIn,
+      });
+
+      // Render the Google Sign-In button
+      const googleButtonContainer = document.getElementById('google-signin-button');
+      if (googleButtonContainer) {
+        window.google.accounts.id.renderButton(
+          googleButtonContainer,
+          {
+            type: 'standard',
+            size: 'large',
+            text: 'signin_with',
+            locale: 'en',
+            width: '100%',
+          }
+        );
+      }
+    }
+  };
+
+  const handleGoogleSignIn = async (response) => {
+    try {
+      setError('');
+      setIsLoading(true);
+
+      // Decode JWT response from Google
+      const credential = response.credential;
+      const base64Url = credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const googleUser = JSON.parse(jsonPayload);
+
+      // Extract email and name from Google response
+      const email = googleUser.email;
+      const fullName = googleUser.name;
+
+      // Try to login or register user with Google email
+      try {
+        await login(email, credential); // Use JWT as temporary password
+        navigate('/dashboard');
+      } catch (loginErr) {
+        // If user doesn't exist, create new user
+        if (loginErr.message?.includes('Invalid')) {
+          // Registration logic can be added here
+          setError(t('google_signin_success') || 'Google sign-in verified. Please complete registration.');
+          // Could redirect to signup or auto-create user here
+        }
+      }
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      setError(t('google_signin_failed') || 'Google sign-in failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -66,7 +150,22 @@ export default function SignIn() {
             </div>
           )}
 
-          {/* Login Form */}
+          {/* Google Sign-In Button */}
+          {googleLoaded && (
+            <div id="google-signin-button" className="flex justify-center"></div>
+          )}
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-muted-foreground">{t('or') || 'or'}</span>
+            </div>
+          </div>
+
+          {/* Email/Password Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             {/* Email Input */}
             <div className="space-y-2">
@@ -77,6 +176,7 @@ export default function SignIn() {
                 <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
+                  data-testid="signin-email"
                   type="email"
                   placeholder={t('email_placeholder') || 'you@example.com'}
                   value={email}
@@ -97,6 +197,7 @@ export default function SignIn() {
                 <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="password"
+                  data-testid="signin-password"
                   type="password"
                   placeholder={t('password_placeholder') || 'Enter your password'}
                   value={password}
@@ -110,7 +211,9 @@ export default function SignIn() {
 
             {/* Submit Button */}
             <Button
+              id="submit"
               type="submit"
+              data-testid="signin-submit"
               disabled={isLoading}
               className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
             >
@@ -124,25 +227,6 @@ export default function SignIn() {
               )}
             </Button>
           </form>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-muted-foreground">{t('or') || 'or'}</span>
-            </div>
-          </div>
-
-          {/* Alternative Login */}
-          <Button
-            onClick={() => base44.auth.redirectToLogin(window.location.href)}
-            variant="outline"
-            className="w-full"
-          >
-            {t('login_with_base44') || 'Login with Base44'}
-          </Button>
 
           {/* Sign Up Link */}
           <div className="text-center">

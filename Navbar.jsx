@@ -45,7 +45,7 @@ export default function Navbar() {
               <>
                 <NotificationBell />
                 <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="hidden md:flex">{user.full_name || t('nav_profile')}</Button>
+                  <Button variant="ghost" size="sm" className="hidden md:flex">{t('welcome_user', { name: user.full_name || user.name || user.email })}</Button>
                 </Link>
               </>
             ) : (

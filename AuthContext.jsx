@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from './base44Client';
+import bcrypt from 'bcryptjs';
 import { appParams } from './app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -137,25 +138,26 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(true);
       setAuthError(null);
       
-      // Query for user with matching email and password
+      // Query for user by email, then compare hashed password
       const users = await base44.entities.User.list({
-        filters: {
-          email: { $eq: email },
-          password_hash: { $eq: btoa(password) } // Simple hash for demo - use proper hashing in production
-        }
+        filters: { email: { $eq: email } }
       });
 
       if (users && users.length > 0) {
         const user = users[0];
-        setUser(user);
-        setIsAuthenticated(true);
-        setIsLoadingAuth(false);
-        setAuthChecked(true);
-        return { success: true, user };
-      } else {
-        setIsLoadingAuth(false);
-        throw new Error('Invalid credentials');
+        const storedHash = user.password_hash;
+        const match = storedHash ? bcrypt.compareSync(password, storedHash) : false;
+        if (match) {
+          setUser(user);
+          setIsAuthenticated(true);
+          setIsLoadingAuth(false);
+          setAuthChecked(true);
+          return { success: true, user };
+        }
       }
+
+      setIsLoadingAuth(false);
+      throw new Error('Invalid credentials');
     } catch (error) {
       console.error('Login error:', error);
       setIsLoadingAuth(false);
@@ -181,10 +183,11 @@ export const AuthProvider = ({ children }) => {
         throw new Error('User with this email already exists');
       }
 
-      // Create new user
+      // Create new user with bcrypt-hashed password
+      const hashed = bcrypt.hashSync(password, 10);
       const newUser = await base44.entities.User.create({
         email,
-        password_hash: btoa(password), // Simple hash for demo
+        password_hash: hashed,
         full_name: fullName,
         role: role || 'donor',
         created_at: new Date().toISOString()

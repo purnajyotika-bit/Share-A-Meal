@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './button';
 import { Input } from './input';
@@ -27,6 +27,90 @@ export default function SignUp() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  useEffect(() => {
+    // Load Google Sign-In script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setGoogleLoaded(true);
+      initializeGoogleSignIn();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
+        callback: handleGoogleSignUp,
+      });
+
+      // Render the Google Sign-In button
+      const googleButtonContainer = document.getElementById('google-signup-button');
+      if (googleButtonContainer) {
+        window.google.accounts.id.renderButton(
+          googleButtonContainer,
+          {
+            type: 'standard',
+            size: 'large',
+            text: 'signup_with',
+            locale: 'en',
+            width: '100%',
+          }
+        );
+      }
+    }
+  };
+
+  const handleGoogleSignUp = async (response) => {
+    try {
+      setError('');
+      setIsLoading(true);
+
+      // Decode JWT response from Google
+      const credential = response.credential;
+      const base64Url = credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const googleUser = JSON.parse(jsonPayload);
+
+      // Extract data from Google response
+      const email = googleUser.email;
+      const fullName = googleUser.name;
+
+      // Auto-register user with Google credentials
+      try {
+        await register(email, credential, fullName, formData.role);
+        navigate('/dashboard');
+      } catch (regErr) {
+        if (regErr.message?.includes('already exists')) {
+          setError(t('email_already_exists') || 'Email already registered');
+        } else {
+          setError(regErr.message || t('registration_failed') || 'Registration failed');
+        }
+      }
+    } catch (err) {
+      console.error('Google sign-up error:', err);
+      setError(t('google_signin_failed') || 'Google sign-up failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,6 +180,21 @@ export default function SignUp() {
             </div>
           )}
 
+          {/* Google Sign-Up Button */}
+          {googleLoaded && (
+            <div id="google-signup-button" className="flex justify-center"></div>
+          )}
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-muted-foreground">{t('or') || 'or'}</span>
+            </div>
+          </div>
+
           {/* Sign Up Form */}
           <form onSubmit={handleSignUp} className="space-y-4">
             {/* Full Name Input */}
@@ -108,6 +207,7 @@ export default function SignUp() {
                 <Input
                   id="fullName"
                   name="fullName"
+                  data-testid="signup-full-name"
                   type="text"
                   placeholder={t('full_name_placeholder') || 'John Doe'}
                   value={formData.fullName}
@@ -129,6 +229,7 @@ export default function SignUp() {
                 <Input
                   id="email"
                   name="email"
+                  data-testid="signup-email"
                   type="email"
                   placeholder={t('email_placeholder') || 'you@example.com'}
                   value={formData.email}
@@ -170,6 +271,7 @@ export default function SignUp() {
                 <Input
                   id="password"
                   name="password"
+                  data-testid="signup-password"
                   type="password"
                   placeholder={t('password_placeholder') || 'Min 6 characters'}
                   value={formData.password}
@@ -191,6 +293,7 @@ export default function SignUp() {
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
+                  data-testid="signup-confirm-password"
                   type="password"
                   placeholder={t('confirm_password_placeholder') || 'Repeat password'}
                   value={formData.confirmPassword}
@@ -204,7 +307,9 @@ export default function SignUp() {
 
             {/* Submit Button */}
             <Button
+              id="submit"
               type="submit"
+              data-testid="signup-submit"
               disabled={isLoading}
               className="w-full bg-primary hover:bg-primary/90 text-white gap-2"
             >
