@@ -84,6 +84,10 @@ export default function SignIn() {
       // Try to login or register user with Google email
       try {
         await login(email, credential); // Use JWT as temporary password
+        // Save name and token right after login success
+      localStorage.setItem("token", credential);
+      localStorage.setItem("userName", fullName || "Active User");
+      localStorage.setItem("userEmail", email);
         navigate('/dashboard');
       } catch (loginErr) {
         // If user doesn't exist, create new user
