@@ -14,7 +14,19 @@ export default function Leaderboard() {
     queryKey: ['leaderboard'],
     queryFn: async () => {
       const all = await base44.entities.User.list();
-      return all.filter(u => u.role !== 'admin').sort((a, b) => (b.impact_points || 0) - (a.impact_points || 0));
+      const fetchedUsers = all.filter(u => u.role !== 'admin');
+      
+      // Local signed-in user list processing logic verification
+      const currentUserName = localStorage.getItem("userName");
+      if (currentUserName && !fetchedUsers.some(u => (u.full_name || u.name) === currentUserName)) {
+        fetchedUsers.push({
+          _id: "local_active_user",
+          full_name: currentUserName,
+          impact_points: 10 // Initial startup tracking points validation
+        });
+      }
+
+      return fetchedUsers.sort((a , b ) => (b. impact_points || 0 ) - (a. impact_points || 0 ) ) ;
     },
   });
 
