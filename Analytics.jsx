@@ -50,6 +50,36 @@ export default function Analytics() {
     queryKey: ['analytics-donations'],
     queryFn: () => base44.entities.Donation.list('-created_date', 500),
   });
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiInsight, setAiInsight] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState(null);
+
+  const handleAISubmit = async (e) => {
+    e.preventDefault();
+    if (!aiPrompt.trim()) return;
+
+    setAiLoading(true);
+    setAiError(null);
+
+    try {
+      const response = await fetch('https://share-a-meal-14.onrender.com/api/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: aiPrompt })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate insight');
+      
+      const data = await response.json();
+      setAiInsight(data.text || data.insight);
+    } catch (err) {
+      console.error(err);
+      setAiError('I encountered an issue generating the insight. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const { data: users = [] } = useQuery({
     queryKey: ['analytics-users'],
