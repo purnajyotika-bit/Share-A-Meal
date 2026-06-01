@@ -21,6 +21,9 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
+    preview: {
+    allowedHosts: ['share-a-meal-14.onrender.com']
+  },
   ],
   resolve: {
     alias: [
