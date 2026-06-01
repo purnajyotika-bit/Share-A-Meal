@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, Menu } from 'lucide-react';
+import { Menu, Sun, Moon } from 'lucide-react';
 import { Button } from './button';
 import { Sheet, SheetContent, SheetTrigger } from './sheet';
 import NotificationBell from './NotificationBell';
@@ -15,30 +15,48 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const isActive = (p) => location.pathname === p;
 
+  // 💡 Madam, Theme local storage state values updates
+  const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
+
+  useEffect(() => {
+    // Document root frame adjustments for smooth theme conversion
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('appTheme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  // 💡 Adaptive variables frame balance based on Light/Dark selection
+  const logoBorderColor = theme === 'dark' ? 'border-orange-200' : 'border-orange-500';
+  const logoBgColor = theme === 'dark' ? 'bg-orange-950/80' : 'bg-black';
+  const logoScale = theme === 'dark' ? 'scale-100' : 'scale-110';
+
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+          
+          {/* Left side Brand Logo Header Block */}
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-          <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-orange-200 bg-white shadow-sm flex items-center justify-center">
-            <img 
-              src="https://images.prodia.rocks/681408677388762529.png" 
-              alt="Share-A-Meal Amma Logo" 
-              className="h-full w-full object-cover"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          </div>
-          <div className="leading-tight">
-            <span className="font-bold text-foreground text-[15px] tracking-tight block">
-              {t('nav_brand_title')}
-            </span>
-            <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-              {t('nav_brand_subtitle')}
-            </span>
-          </div>
-        </Link>
+            <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} ${logoBgColor} flex items-center justify-center shadow-lg hover:border-orange-300`}>
+              <img 
+                src="https://images.prodia.rocks/681408677388762529.png" 
+                alt="Share-A-Meal Amma Logo" 
+                className={`h-full w-full object-cover ${logoScale}`} 
+                onError={(e) => { e.target.style.display = 'none'; }} 
+              />
+            </div>
+            <div className="leading-tight">
+              <span className="font-bold text-foreground text-[15px] tracking-tight block">
+                {t('nav_brand_title')}
+              </span>
+              <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                {t('nav_brand_subtitle')}
+              </span>
+            </div>
+          </Link>
 
           <div className="hidden md:flex items-center gap-1">
             <Link to="/leaderboard"><Button variant={isActive('/leaderboard') ? 'secondary' : 'ghost'} size="sm">{t('nav_leaderboard')}</Button></Link>
@@ -51,34 +69,33 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            
+            {/* 💡 Madam, Theme Switcher Moon/Sun Button trigger */}
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="w-8 h-8 rounded-full">
+              {theme === 'light' ? <Moon className="w-4 h-4 text-orange-600" /> : <Sun className="w-4 h-4 text-amber-300" />}
+            </Button>
+
             <LanguageSwitcher />
             {user || localStorage.getItem("userName") ? (
-               <>
-    <NotificationBell />
-    <Link to="/profile">
-      <Button variant="ghost" size="sm" className="hidden md:flex">
-        Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋
-      </Button>
-    </Link>
-    <Button 
-      variant="outline" 
-      size="sm" 
-      onClick={() => {
-        localStorage.clear();
-        window.location.href = "/";
-      }}
-      className="ml-2 text-xs text-destructive hover:bg-destructive/10"
-    >
-      Logout
-    </Button>
-  </>
-) : (
-  <Link to="/signin">
-    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
-      {t('nav_get_started')}
-    </Button>
-  </Link>
-    )}
+              <>
+                <NotificationBell />
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm" className="hidden md:flex">
+                    Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋
+                  </Button>
+                </Link>
+                <Button variant="outline" size="sm" onClick={() => { localStorage.clear(); window.location.href = "/"; }} className="ml-2 text-xs text-destructive hover:bg-destructive/10">
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link to="/signin">
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
+                  {t('nav_get_started')}
+                </Button>
+              </Link>
+            )}
+            
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-5 h-5" /></Button>
