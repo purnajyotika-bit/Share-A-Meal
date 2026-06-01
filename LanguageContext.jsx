@@ -8,13 +8,19 @@ export function LanguageProvider({ children }) {
     return localStorage.getItem('app_lang') || detectBrowserLanguage();
   });
 
-  const setLang = (code) => {
-    setLangState(code);
-    localStorage.setItem('app_lang', code);
-    const langObj = LANGUAGES.find(l => l.code === code);
-    document.documentElement.dir = langObj?.dir || 'ltr';
-    document.documentElement.lang = code;
-  };
+  const setLang = (code ) => {
+    setLangState (code ) ; 
+    localStorage. setItem ('app_lang' , code ) ; 
+    
+    // 🔴 Global Translation Framework trigger block
+    if (typeof translate === 'function') {
+      translate(code); 
+    }
+    
+    const langObj = LANGUAGES. find (l => l. code === code ) ; 
+    document. documentElement . dir = langObj?. dir || 'ltr' ; 
+    document. documentElement . lang = code; 
+  } ;
 
   useEffect(() => {
     const langObj = LANGUAGES.find(l => l.code === lang);
