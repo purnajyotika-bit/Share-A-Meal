@@ -41,16 +41,33 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
-            {user ? (
-              <>
-                <NotificationBell />
-                <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="hidden md:flex">{t('welcome_user', { name: user.full_name || user.name || user.email })}</Button>
-                </Link>
-              </>
-            ) : (
-              <Link to="/signin"><Button size="sm" className="bg-primary hover:bg-primary/90 text-white">{t('nav_get_started')}</Button></Link>
-            )}
+            {user || localStorage.getItem("userName") ? (
+               <>
+    <NotificationBell />
+    <Link to="/profile">
+      <Button variant="ghost" size="sm" className="hidden md:flex">
+        Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋
+      </Button>
+    </Link>
+    <Button 
+      variant="outline" 
+      size="sm" 
+      onClick={() => {
+        localStorage.clear();
+        window.location.href = "/";
+      }}
+      className="ml-2 text-xs text-destructive hover:bg-destructive/10"
+    >
+      Logout
+    </Button>
+  </>
+) : (
+  <Link to="/signin">
+    <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
+      {t('nav_get_started')}
+    </Button>
+  </Link>
+    )}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-5 h-5" /></Button>
