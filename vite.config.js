@@ -23,7 +23,8 @@ export default defineConfig({
     react(),
   ], 
   preview: {
-    allowedHosts: ['share-a-meal-14.onrender.com']
+    // Ikkada 'true' set chesthe share-a-meal-21, 22 edhi vachina Vite direct ga accept chestundi 👇
+    allowedHosts: true
   }, 
   resolve: {
     alias: [
