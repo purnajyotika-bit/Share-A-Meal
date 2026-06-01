@@ -21,10 +21,10 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-    preview: {
+  ], 
+  preview: {
     allowedHosts: ['share-a-meal-14.onrender.com']
-  },
-  ],
+  }, 
   resolve: {
     alias: [
       { find: /^@\/components\/ui\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
@@ -34,4 +34,4 @@ export default defineConfig({
       { find: /^@\/(.+)$/, replacement: path.resolve(__dirname, './$1') },
     ],
   },
-});
+})
