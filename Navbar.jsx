@@ -15,7 +15,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const isActive = (p) => location.pathname === p;
 
-  // 💡 Madam, Theme local storage state values updates
   const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
 
   useEffect(() => {
@@ -42,10 +41,9 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} ${logoBgColor} flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <img 
-                src="https://images.prodia.rocks/681408677388762529.png" 
-                alt="Share-A-Meal Amma Logo" 
-                className={`h-full w-full object-cover ${logoScale}`} 
-                onError={(e) => { e.target.style.display = 'none'; }} 
+               <img src="https://img.icons8.com/fluent/96/restaurant-sharing.png" 
+                 alt="Share-A-Meal Logo" 
+                 className={`h-full w-full object-cover ${logoScale}`} />
               />
             </div>
             <div className="leading-tight">
