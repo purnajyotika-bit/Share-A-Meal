@@ -23,7 +23,6 @@ export default defineConfig({
     react(),
   ], 
   preview: {
-    // Ikkada 'true' set chesthe share-a-meal-21, 22 edhi vachina Vite direct ga accept chestundi 👇
     allowedHosts: true
   }, 
   resolve: {
