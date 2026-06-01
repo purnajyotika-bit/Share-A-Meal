@@ -9,7 +9,8 @@ import { Label } from './label';
 import { Card, CardContent, CardHeader, CardTitle } from './card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { Avatar, AvatarFallback } from './avatar';
-import { Save, LogOut, Loader2, KeyRound, User, Phone, MapPin, Building2 } from 'lucide-react';
+// 💡 Madam, Sun, Moon, Globe icons are added here
+import { Save, LogOut, Loader2, KeyRound, User, Phone, MapPin, Building2, Sun, Moon, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Profile() {
@@ -60,6 +61,7 @@ export default function Profile() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-2xl font-bold text-foreground mb-6">{t('profile_title')}</h1>
 
+      {/* Profile Info Card */}
       <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="flex items-center gap-4 mb-6">
@@ -117,6 +119,60 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* 💡 Madam, Beautiful App Preferences Card Section Integration */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Sun className="w-4 h-4 text-orange-500" />
+            App Preferences
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2">
+          
+          {/* Theme Toggle option */}
+          <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg border border-border shadow-sm">
+            <div>
+              <p className="text-sm font-medium text-foreground">Theme Mode</p>
+              <p className="text-xs text-muted-foreground">Toggle Light/Dark layout</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => {
+                const currentTheme = localStorage.getItem('appTheme') || 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('appTheme', newTheme);
+                document.documentElement.classList.toggle('dark', newTheme === 'dark');
+                window.location.reload(); // Instantly reloads page to sync state smoothly
+              }}
+            >
+              Switch Theme
+            </Button>
+          </div>
+
+          {/* Language setup info */}
+          <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg border border-border shadow-sm">
+            <div>
+              <p className="text-sm font-medium text-foreground">Language / భాష</p>
+              <p className="text-xs text-muted-foreground">English & తెలుగు switch status</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => {
+                toast.info("Language preferences can be globally managed via the top Navbar controls!");
+              }}
+            >
+              Info
+            </Button>
+          </div>
+
+        </CardContent>
+      </Card>
+
+      {/* Password Reset Card */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2"><KeyRound className="w-4 h-4" />{t('profile_password_reset_title')}</CardTitle>
@@ -139,6 +195,7 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* Sign Out Trigger */}
       <Button variant="ghost" onClick={() => base44.auth.logout('/')} className="text-destructive hover:text-destructive gap-2">
         <LogOut className="w-4 h-4" /> {t('profile_sign_out')}
       </Button>
