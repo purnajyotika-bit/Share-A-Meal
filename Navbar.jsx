@@ -19,15 +19,26 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white fill-current" />
-            </div>
-            <div className="leading-tight">
-              <span className="font-bold text-foreground text-[15px] tracking-tight">{t('nav_brand_title')}</span>
-              <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">{t('nav_brand_subtitle')}</span>
-            </div>
-          </Link>
+          <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
+          <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-orange-200 bg-white shadow-sm flex items-center justify-center">
+            <img 
+              src="https://images.prodia.rocks/681408677388762529.png" 
+              alt="Share-A-Meal Amma Logo" 
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
+          <div className="leading-tight">
+            <span className="font-bold text-foreground text-[15px] tracking-tight block">
+              {t('nav_brand_title')}
+            </span>
+            <span className="block text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+              {t('nav_brand_subtitle')}
+            </span>
+          </div>
+        </Link>
 
           <div className="hidden md:flex items-center gap-1">
             <Link to="/leaderboard"><Button variant={isActive('/leaderboard') ? 'secondary' : 'ghost'} size="sm">{t('nav_leaderboard')}</Button></Link>
