@@ -24,7 +24,36 @@ export default function Fundraising() {
 
   const { data: campaigns = [], isLoading } = useQuery({
     queryKey: ['campaigns'],
-    queryFn: () => base44.entities.Campaign.list('-created_date', 50),
+    queryFn : async () => {
+      const all = await base44. entities . Campaign . list ('-created_date' , 50 ) ; 
+      
+      // Database empty ga unnapudu ee pre-defined data cards kanipisthayi
+      if (!all || all.length === 0) {
+        return [
+          {
+            _id: "mock-camp-1",
+            title: "Emergency Rice Kit Distribution",
+            description: "Providing essential grocery and rice supplies to 100+ low-income families this month.",
+            target_amount: 50000,
+            raised_amount: 25000,
+            status: "approved", // UI rendering logic validation
+            category: "emergency",
+            is_emergency: true
+          },
+          {
+            _id: "mock-camp-2",
+            title: "Community Kitchen Daily Expansion",
+            description: "Funding daily cooked meals operation support for homeless shelters around local areas.",
+            target_amount: 30000,
+            raised_amount: 12000,
+            status: "approved",
+            category: "community_kitchen",
+            is_featured: true
+          }
+        ];
+      }
+      return all;
+    } ,
   });
 
   const approved = campaigns.filter(c => c.status === 'approved');
