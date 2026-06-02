@@ -18,7 +18,6 @@ export default function Navbar() {
   const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
 
   useEffect(() => {
-    // Document root frame adjustments for smooth theme conversion
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('appTheme', theme);
   }, [theme]);
@@ -27,9 +26,7 @@ export default function Navbar() {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  // 💡 Adaptive variables frame balance based on Light/Dark selection
   const logoBorderColor = theme === 'dark' ? 'border-orange-200' : 'border-orange-500';
-  const logoBgColor = theme === 'dark' ? 'bg-orange-950/80' : 'bg-black';
   const logoScale = theme === 'dark' ? 'scale-100' : 'scale-110';
 
   return (
@@ -45,7 +42,6 @@ export default function Navbar() {
                 alt="Share-A-Meal Logo" 
                 className={`h-[80%] w-[80%] object-contain ${logoScale}`} 
               />
-            </div>
             </div>
             <div className="leading-tight">
               <span className="font-bold text-foreground text-[15px] tracking-tight block">
@@ -68,8 +64,6 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            
-            {/* 💡 Madam, Theme Switcher Moon/Sun Button trigger */}
             <Button variant="ghost" size="icon" onClick={toggleTheme} className="w-8 h-8 rounded-full">
               {theme === 'light' ? <Moon className="w-4 h-4 text-orange-600" /> : <Sun className="w-4 h-4 text-amber-300" />}
             </Button>
