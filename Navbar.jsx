@@ -38,9 +38,9 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <img 
-                src="https://cdn-icons-png.flaticon.com/512/3130/3130328.png" 
+                src="https://cdn-icons-png.flaticon.com/512/5110/5110754.png" 
                 alt="Share-A-Meal Logo" 
-                className={`h-[80%] w-[80%] object-contain ${logoScale}`} 
+                className={`h-[65%] w-[65%] object-contain invert brightness-0 ${logoScale}`} 
               />
             </div>
             <div className="leading-tight">
