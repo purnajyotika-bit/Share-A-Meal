@@ -35,8 +35,12 @@ export default function Navbar() {
           
           {/* Left side Brand Logo Header Block */}
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-            <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
-              <span className="text-white font-bold text-xl leading-none select-none">🥣</span>
+            <div className={`relative h-11 w-11 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
+              <img 
+                src="https://api.iconify.design/fluent-emoji-flat:bowl-with-spoon.svg" 
+                alt="Anime Share-A-Meal Logo" 
+                className="h-[75%] w-[75%] object-contain scale-110 drop-shadow-md" 
+              />
             </div>
             <div className="leading-tight">
               <span className="font-bold text-foreground text-[15px] tracking-tight block">
