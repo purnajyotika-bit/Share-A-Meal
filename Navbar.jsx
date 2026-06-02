@@ -34,32 +34,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-            {/* Logo Container with Sketch-Style SVG */}
-            <div className={`relative h-12 w-12 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-white flex items-center justify-center shadow-lg hover:border-orange-300`}>
-              <svg 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#f97316" 
-                strokeWidth="1.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className="h-[80%] w-[80%]"
-              >
-                {/* Offering Hand (Solid Silhouette from 1000051607.png) */}
-                <path d="M2 13l4-2 3 2 1-1" strokeWidth="1" />
-                <path d="M4 14l2 3h4l2-2" />
-                
-                {/* Receiving Hand (Outline Silhouette from 1000051607.png) */}
-                <path d="M14 16l4-2 3 2 1-1" strokeWidth="1" />
-                <path d="M16 17l2 3h4l2-2" />
-                
-                {/* Bowl and Food Sketch */}
-                <path d="M8 11h8a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1z" />
-                <path d="M9 12a3 3 0 0 0 6 0" />
-                <path d="M12 8c0-1 1-1 1-2s-1-1-1-2" />
+            <div className={`relative h-12 w-12 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[60%] w-[60%]">
+                {/* Bowl */}
+                <path d="M4 10h16l-2 9H6l-2-9z" />
+                {/* Spoon */}
+                <path d="M14 6l-4 4" />
+                {/* Steam */}
+                <path d="M12 2l-1 2M14 3l-1 2M10 3l-1 2" />
               </svg>
             </div>
-            
             <div className="leading-tight">
               <span className="font-bold text-foreground text-[15px] tracking-tight block">
                 {t('nav_brand_title')}
@@ -70,7 +54,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* ... (Rest of your original navigation buttons) */}
           <div className="hidden md:flex items-center gap-1">
             <Link to="/leaderboard"><Button variant={isActive('/leaderboard') ? 'secondary' : 'ghost'} size="sm">{t('nav_leaderboard')}</Button></Link>
             <Link to="/fundraising"><Button variant={isActive('/fundraising') ? 'secondary' : 'ghost'} size="sm">{t('nav_fundraising')}</Button></Link>
@@ -90,13 +73,39 @@ export default function Navbar() {
               <>
                 <NotificationBell />
                 <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="hidden md:flex">Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋</Button>
+                  <Button variant="ghost" size="sm" className="hidden md:flex">
+                    Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋
+                  </Button>
                 </Link>
-                <Button variant="outline" size="sm" onClick={() => { localStorage.clear(); window.location.href = "/"; }} className="ml-2 text-xs text-destructive hover:bg-destructive/10">Logout</Button>
+                <Button variant="outline" size="sm" onClick={() => { localStorage.clear(); window.location.href = "/"; }} className="ml-2 text-xs text-destructive hover:bg-destructive/10">
+                  Logout
+                </Button>
               </>
             ) : (
-              <Link to="/signin"><Button size="sm" className="bg-primary hover:bg-primary/90 text-white">{t('nav_get_started')}</Button></Link>
+              <Link to="/signin">
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
+                  {t('nav_get_started')}
+                </Button>
+              </Link>
             )}
+            
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-5 h-5" /></Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64">
+                <div className="flex flex-col gap-2 mt-8">
+                  <Link to="/leaderboard" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_leaderboard')}</Button></Link>
+                  <Link to="/fundraising" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_fundraising')}</Button></Link>
+                  <Link to="/analytics" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_analytics')}</Button></Link>
+                  {user && <>
+                    <Link to="/dashboard" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_dashboard')}</Button></Link>
+                    <Link to="/nearby" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_nearby')}</Button></Link>
+                    <Link to="/profile" onClick={() => setOpen(false)}><Button variant="ghost" className="w-full justify-start">{t('nav_profile')}</Button></Link>
+                  </>}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
