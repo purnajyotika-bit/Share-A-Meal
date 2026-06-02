@@ -35,7 +35,7 @@ export default function Navbar() {
           
           {/* Left side Brand Logo Header Block */}
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-            <div className={`relative h-11 w-11 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
+            <div className={`relative h-12 w-12 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <svg 
                 viewBox="0 0 24 24" 
                 fill="none" 
