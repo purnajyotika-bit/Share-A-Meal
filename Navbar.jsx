@@ -36,11 +36,29 @@ export default function Navbar() {
           {/* Left side Brand Logo Header Block */}
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-11 w-11 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
-              <img 
-                src="https://api.iconify.design/fluent-emoji-flat:bowl-with-spoon.svg" 
-                alt="Anime Share-A-Meal Logo" 
-                className="h-[75%] w-[75%] object-contain scale-110 drop-shadow-md" 
-              />
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="white" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="h-[65%] w-[65%] drop-shadow-md"
+              >
+                {/* Rice/Food content lines inside the bowl */}
+                <path d="M6 10c1-1 2-1.5 4-1s3 .5 4-.5.5-1.5 2-1.5" />
+                <path d="M8 8.5c1.5-.5 3-.5 4.5.5" />
+                
+                {/* Main Anime Sketch Style Bowl Shape */}
+                <path d="M3 11c0 4.4 3.6 8 8 8h2c4.4 0 8-3.6 8-8H3z" />
+                
+                {/* Bowl Base Ring Stand */}
+                <path d="M9 19c0 1 1 2 2 2h2c1 0 2-1 2-2" />
+                
+                {/* Cute Steam lines rising from food */}
+                <path d="M10 3c0 .5-.5 1-1 1s-.5.5-.5 1" />
+                <path d="M14 2.5c0 .5-.5 1-1 1s-.5.5-.5 1" />
+              </svg>
             </div>
             <div className="leading-tight">
               <span className="font-bold text-foreground text-[15px] tracking-tight block">
