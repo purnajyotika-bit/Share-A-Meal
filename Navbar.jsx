@@ -35,14 +35,14 @@ export default function Navbar() {
           
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-12 w-12 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[60%] w-[60%]">
-                {/* Bowl */}
-                <path d="M4 10h16l-2 9H6l-2-9z" />
-                {/* Spoon */}
-                <path d="M14 6l-4 4" />
-                {/* Steam */}
-                <path d="M12 2l-1 2M14 3l-1 2M10 3l-1 2" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-[60%] w-[60%]">
+  {/* Simple Bowl */}
+  <path d="M5 9h14l-2 9H7l-2-9z" />
+  {/* Minimalist Spoon */}
+  <path d="M16 6l-5 5" />
+  {/* Steam - only 2 small lines for clarity */}
+  <path d="M12 2v2M10 2v2" />
+</svg>
             </div>
             <div className="leading-tight">
               <span className="font-bold text-foreground text-[15px] tracking-tight block">
