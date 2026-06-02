@@ -41,9 +41,9 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} ${logoBgColor} flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <img 
-                src="https://img.icons8.com/fluent/96/restaurant-sharing.png" 
+                src="https://cdn-icons-png.flaticon.com/512/3575/3575673.png" 
                 alt="Share-A-Meal Logo" 
-                className={`h-full w-full object-cover ${logoScale}`} 
+                className={`h-full w-full object-cover p-1 ${logoScale}`} 
               />
             </div>
             <div className="leading-tight">
