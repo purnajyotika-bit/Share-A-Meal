@@ -40,24 +40,29 @@ export default function Navbar() {
                 viewBox="0 0 24 24" 
                 fill="none" 
                 stroke="white" 
-                strokeWidth="2" 
+                strokeWidth="1.8" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                className="h-[65%] w-[65%] drop-shadow-md"
+                className="h-[75%] w-[75%] drop-shadow-md"
               >
-                {/* Rice/Food content lines inside the bowl */}
-                <path d="M6 10c1-1 2-1.5 4-1s3 .5 4-.5.5-1.5 2-1.5" />
-                <path d="M8 8.5c1.5-.5 3-.5 4.5.5" />
+                {/* Left side Hand Sketch - Giving Action */}
+                <path d="M2 13h3.5l1.5-1.5c.3-.3.8-.4 1.2-.2l1.8.8" />
+                <path d="M3 15h2.5l2-1" />
                 
-                {/* Main Anime Sketch Style Bowl Shape */}
-                <path d="M3 11c0 4.4 3.6 8 8 8h2c4.4 0 8-3.6 8-8H3z" />
+                {/* Right side Hand Sketch - Receiving Action */}
+                <path d="M22 14h-3.5l-1.5 1.5c-.3.3-.8.4-1.2.2l-1.8-.8" />
+                <path d="M21 16h-2.5l-2 1" />
                 
-                {/* Bowl Base Ring Stand */}
-                <path d="M9 19c0 1 1 2 2 2h2c1 0 2-1 2-2" />
+                {/* Center Hand-Drawn Anime Bowl containing premium food lines */}
+                <path d="M8 10.5c0 2.2 1.8 4 4 4s4-1.8 4-4H8z" fill="white" fillOpacity="0.2" />
+                <path d="M10 14.5a2 2 0 0 0 4 0" />
                 
-                {/* Cute Steam lines rising from food */}
-                <path d="M10 3c0 .5-.5 1-1 1s-.5.5-.5 1" />
-                <path d="M14 2.5c0 .5-.5 1-1 1s-.5.5-.5 1" />
+                {/* Food content texture sketch dots/lines inside bowl */}
+                <path d="M9.5 9.5c1.5-.8 3.5-.8 5 0" />
+                
+                {/* Heart-shaped emotional warmth steam lines */}
+                <path d="M12 3.5c-.5-1-1.5-.5-1.5.5 0 1 1.5 1.5 1.5 2.5" />
+                <path d="M12 3.5c.5-1 1.5-.5 1.5.5 0 1-1.5 1.5-1.5 2.5" />
               </svg>
             </div>
             <div className="leading-tight">
