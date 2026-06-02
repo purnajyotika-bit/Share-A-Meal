@@ -27,7 +27,6 @@ export default function Navbar() {
   };
 
   const logoBorderColor = theme === 'dark' ? 'border-orange-200' : 'border-orange-500';
-  const logoScale = theme === 'dark' ? 'scale-100' : 'scale-110';
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
@@ -38,9 +37,9 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-10 w-10 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <img 
-                src="https://cdn-icons-png.flaticon.com/512/5110/5110754.png" 
+                src="https://api.iconify.design/lucide:utensils-cross.svg?color=white" 
                 alt="Share-A-Meal Logo" 
-                className={`h-[65%] w-[65%] object-contain invert brightness-0 ${logoScale}`} 
+                className="h-6 w-6 object-contain" 
               />
             </div>
             <div className="leading-tight">
