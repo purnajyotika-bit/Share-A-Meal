@@ -33,30 +33,26 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Left side Brand Logo Header Block */}
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
             <div className={`relative h-12 w-12 overflow-hidden rounded-full border-2 ${logoBorderColor} bg-orange-500 flex items-center justify-center shadow-lg hover:border-orange-300`}>
               <svg 
                 viewBox="0 0 24 24" 
                 fill="none" 
                 stroke="white" 
-                strokeWidth="2.2" 
+                strokeWidth="2" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                className="h-[75%] w-[75%] drop-shadow-md"
+                className="h-[65%] w-[65%]"
               >
-                {/* Clear Left Hand - Giving From Bottom Left */}
-                <path d="M2 14h4l2.5-2.5c.3-.3.8-.3 1.1 0l1.4 1.4" />
+                {/* Minimalist Hands Holding */}
+                <path d="M4 14l2-2h4l2 2" />
+                <path d="M14 14l2-2h4l2 2" />
                 
-                {/* Clear Right Hand - Receiving At Bottom Right */}
-                <path d="M22 14h-4l-2.5 2.5c-.3.3-.8.3-1.1 0l-1.4-1.4" />
+                {/* Clean Bowl */}
+                <path d="M7 14h10a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2z" fill="white" fillOpacity="0.2" />
                 
-                {/* Center Solid Premium Bowl with Perfect Clarity */}
-                <path d="M8 10h8c0 2.2-1.8 4-4 4s-4-1.8-4-4z" fill="white" fillOpacity="0.25" />
-                <path d="M10.5 14h3" />
-                
-                {/* Crisp Steam Heart Line above the bowl */}
-                <path d="M12 4c.6-1 1.5-.5 1.5.5 0 .8-.8 1.3-1.5 2-.7-.7-1.5-1.2-1.5-2 0-1 .9-1.5 1.5-.5z" />
+                {/* Simple Food Indicator */}
+                <path d="M9 11l1-2h4l1 2" />
               </svg>
             </div>
             <div className="leading-tight">
@@ -83,26 +79,17 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" onClick={toggleTheme} className="w-8 h-8 rounded-full">
               {theme === 'light' ? <Moon className="w-4 h-4 text-orange-600" /> : <Sun className="w-4 h-4 text-amber-300" />}
             </Button>
-
             <LanguageSwitcher />
             {user || localStorage.getItem("userName") ? (
               <>
                 <NotificationBell />
                 <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋
-                  </Button>
+                  <Button variant="ghost" size="sm" className="hidden md:flex">Hi, {user?.full_name || user?.name || localStorage.getItem("userName") || 'User'}! 👋</Button>
                 </Link>
-                <Button variant="outline" size="sm" onClick={() => { localStorage.clear(); window.location.href = "/"; }} className="ml-2 text-xs text-destructive hover:bg-destructive/10">
-                  Logout
-                </Button>
+                <Button variant="outline" size="sm" onClick={() => { localStorage.clear(); window.location.href = "/"; }} className="ml-2 text-xs text-destructive hover:bg-destructive/10">Logout</Button>
               </>
             ) : (
-              <Link to="/signin">
-                <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
-                  {t('nav_get_started')}
-                </Button>
-              </Link>
+              <Link to="/signin"><Button size="sm" className="bg-primary hover:bg-primary/90 text-white">{t('nav_get_started')}</Button></Link>
             )}
             
             <Sheet open={open} onOpenChange={setOpen}>
