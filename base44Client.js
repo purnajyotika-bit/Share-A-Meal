@@ -8,7 +8,7 @@ export const base44 = createClient({
   appId,
   token,
   functionsVersion,
-  serverUrl: '',
+  serverUrl: import.meta.env.VITE_API_BASE_URL || 'https://share-a-meal-production-0b7a.up.railway.app',
   requiresAuth: false,
   appBaseUrl
 });
